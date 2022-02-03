@@ -144,30 +144,6 @@ namespace ToDoApi.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("ToDoApi.Models.DomainModels.ApplicationUser", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("EmailAddress")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("ApplicationUsers");
-                });
-
             modelBuilder.Entity("ToDoApi.Models.DomainModels.User", b =>
                 {
                     b.Property<string>("Id")
@@ -232,6 +208,102 @@ namespace ToDoApi.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("ToDoWebApi.Models.Category", b =>
+                {
+                    b.Property<string>("CategoryId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = "work",
+                            Name = "Work"
+                        },
+                        new
+                        {
+                            CategoryId = "home",
+                            Name = "Home"
+                        },
+                        new
+                        {
+                            CategoryId = "ex",
+                            Name = "Exercise"
+                        },
+                        new
+                        {
+                            CategoryId = "shop",
+                            Name = "Shopping"
+                        },
+                        new
+                        {
+                            CategoryId = "call",
+                            Name = "Contact"
+                        });
+                });
+
+            modelBuilder.Entity("ToDoWebApi.Models.Status", b =>
+                {
+                    b.Property<string>("StatusId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("StatusId");
+
+                    b.ToTable("Statuses");
+
+                    b.HasData(
+                        new
+                        {
+                            StatusId = "open",
+                            Name = "Open"
+                        },
+                        new
+                        {
+                            StatusId = "closed",
+                            Name = "Completed"
+                        });
+                });
+
+            modelBuilder.Entity("ToDoWebApi.Models.ToDo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoryId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DueDate")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StatusId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("StatusId");
+
+                    b.ToTable("ToDos");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -281,6 +353,25 @@ namespace ToDoApi.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ToDoWebApi.Models.ToDo", b =>
+                {
+                    b.HasOne("ToDoWebApi.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ToDoWebApi.Models.Status", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Status");
                 });
 #pragma warning restore 612, 618
         }

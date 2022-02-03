@@ -60,7 +60,7 @@ namespace ToDoWebApi.Controllers
 
             if (result.Succeeded)
             {
-                bool isPersistant = false;
+                bool isPersistant = true;
                 await _signInManager.SignInAsync(user, isPersistant);
             }
             else

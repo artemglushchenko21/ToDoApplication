@@ -45,7 +45,7 @@ namespace ToDoWebApi.Controllers
             var userList = _context.Users.ToList();
 
             var result = await _signInManager.PasswordSignInAsync(
-                model.Username, model.Password, isPersistent: false,
+                model.Username, model.Password, isPersistent: true,
                 lockoutOnFailure: false);
 
             return result.Succeeded;

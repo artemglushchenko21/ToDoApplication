@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ToDoApi.Models;
 using ToDoApi.Models.Data;
 using ToDoApi.Models.DomainModels;
 
@@ -28,22 +30,45 @@ namespace ToDoApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
 
+            services.AddMemoryCache();
+            services.AddSession();
+
+            services.AddControllersWithViews().AddNewtonsoftJson(); ;
             services.AddDbContext<ApplicationDbContext>(options =>
              options.UseSqlite(Configuration.GetConnectionString("ToDoDB")));
 
-            services.AddIdentity<User, IdentityRole>(options => {
+            services.AddIdentity<UserModel, IdentityRole>(options =>
+            {
                 options.Password.RequiredLength = 6;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireDigit = false;
             }).AddEntityFrameworkStores<ApplicationDbContext>()
      .AddDefaultTokenProviders();
+
+      //      services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+      //.AddCookie(options =>
+      //{
+      //    options.Cookie.Name = "authToken";
+      //    /// control cookie expiration
+      //    options.Cookie.Expiration = TimeSpan.FromMinutes(120);
+      //    options.ExpireTimeSpan = TimeSpan.FromMinutes(120);
+      //    options.Events = new CookieAuthenticationEvents()
+      //    {
+      //        OnRedirectToLogin = (context) =>
+      //        {
+      //            context.HttpContext.Response.Redirect("https://example.com/test/expired.html");
+      //            return Task.CompletedTask;
+      //        }
+      //    };
+      //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+          
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -61,6 +86,8 @@ namespace ToDoApi
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

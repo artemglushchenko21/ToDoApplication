@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using ToDoApi.Models;
 using ToDoApi.Models.Data;
 using ToDoApi.Models.DomainModels;
 using ToDoApi.Models.ViewModels;
@@ -15,11 +16,11 @@ namespace ToDoApi.Controllers
 {
     public class AccountController : Controller
     {
-        private UserManager<User> _userManager;
-        private SignInManager<User> _signInManager;
+        private UserManager<UserModel> _userManager;
+        private SignInManager<UserModel> _signInManager;
         private ApplicationDbContext _context;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ApplicationDbContext applicationDbContext)
+        public AccountController(UserManager<UserModel> userManager, SignInManager<UserModel> signInManager, ApplicationDbContext applicationDbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -42,25 +43,47 @@ namespace ToDoApi.Controllers
         {
             if (ModelState.IsValid)
             {
-                HttpResponseMessage response = await GlobalVariables.WebApiClient.PostAsJsonAsync("Login", model);
+                var result = await _signInManager.PasswordSignInAsync(
+                    model.Username, model.Password, isPersistent: true,
+                    lockoutOnFailure: false);
 
-                var canLogIn = response.Content.ReadAsAsync<bool>().Result;
-
-                if (canLogIn == false)
+                if (result.Succeeded)
                 {
-                    ModelState.AddModelError("", "Invalid username or password.");
+                    if (!string.IsNullOrEmpty(model.ReturnUrl) &&
+                        Url.IsLocalUrl(model.ReturnUrl))
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
-                else
-                {
-                    return RedirectToAction("Index", "Home");
-                }          
             }
 
-            var result = await _signInManager.PasswordSignInAsync(
-        model.Username, model.Password, isPersistent: false,
-        lockoutOnFailure: false);
-
+            ModelState.AddModelError("", "Invalid username/password.");
             return View(model);
+            //    if (ModelState.IsValid)
+            //    {
+            //        HttpResponseMessage response = await GlobalVariables.WebApiClient.PostAsJsonAsync("Login", model);
+
+            //        var canLogIn = response.Content.ReadAsAsync<bool>().Result;
+
+            //        if (canLogIn == false)
+            //        {
+            //            ModelState.AddModelError("", "Invalid username or password.");
+            //        }
+            //        else
+            //        {
+            //            return RedirectToAction("Index", "Home");
+            //        }
+            //    }
+
+            //    var result = await _signInManager.PasswordSignInAsync(
+            //model.Username, model.Password, isPersistent: true,
+            //lockoutOnFailure: false);
+
+            //    return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
@@ -84,7 +107,7 @@ namespace ToDoApi.Controllers
                 return RedirectToAction("Index", "Home");
             }
             return View(model);
-        } 
+        }
     }
 }
 

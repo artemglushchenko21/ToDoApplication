@@ -13,7 +13,9 @@ namespace ToDoMvc
 
         static GlobalVariables()
         {
-            WebApiClient.BaseAddress = new Uri("https://localhost:5001/api/");
+          //  WebApiClient.BaseAddress = new Uri("https://localhost:5001/api/");
+            WebApiClient.BaseAddress = new Uri("https://localhost:44367/api/");
+        
             WebApiClient.DefaultRequestHeaders.Clear();
             WebApiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
