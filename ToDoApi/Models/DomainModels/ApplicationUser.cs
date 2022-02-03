@@ -24,8 +24,8 @@ namespace ToDoApi.Models.DomainModels
 
         [Required(ErrorMessage = "Please enter a password.")]
         [Compare("ConfirmPassword")]
-        [StringLength(25,
-            ErrorMessage = "Please limit your password to 25 characters.")]
+      
+        [StringLength(int.MaxValue, MinimumLength = 6, ErrorMessage = "Password length should be 6 or more characters.")]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Please confirm your password.")]

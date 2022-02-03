@@ -17,14 +17,13 @@ namespace ToDoApi.Controllers
     {
         private UserManager<User> _userManager;
         private SignInManager<User> _signInManager;
-
-        private ApplicationDbContext _applicationDbContext;
+        private ApplicationDbContext _context;
 
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ApplicationDbContext applicationDbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _applicationDbContext = applicationDbContext;
+            _context = applicationDbContext;
         }
         public IActionResult Index()
         {
@@ -43,26 +42,25 @@ namespace ToDoApi.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(
-                    model.Username, model.Password, isPersistent: false,
-                    lockoutOnFailure: false);
+                HttpResponseMessage response = await GlobalVariables.WebApiClient.PostAsJsonAsync("Login", model);
 
-                if (result.Succeeded)
+                var canLogIn = response.Content.ReadAsAsync<bool>().Result;
+
+                if (canLogIn == false)
                 {
-                    if (!string.IsNullOrEmpty(model.ReturnUrl) &&
-                        Url.IsLocalUrl(model.ReturnUrl))
-                    {
-                        return Redirect(model.ReturnUrl);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
+                    ModelState.AddModelError("", "Invalid username or password.");
                 }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }          
             }
 
-            ModelState.AddModelError("", "Invlid username/password.");
-            return View();
+            var result = await _signInManager.PasswordSignInAsync(
+        model.Username, model.Password, isPersistent: false,
+        lockoutOnFailure: false);
+
+            return View(model);
         }
 
         [HttpGet]
@@ -74,39 +72,19 @@ namespace ToDoApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            var list = _applicationDbContext.Users.ToList();
-
             if (ModelState.IsValid)
             {
+                HttpResponseMessage response = await GlobalVariables.WebApiClient.PostAsJsonAsync("User", model);
 
-                HttpResponseMessage response = GlobalVariables.WebApiClient.PostAsJsonAsync("User", model).Result;
+                if (response.IsSuccessStatusCode == false)
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
 
                 return RedirectToAction("Index", "Home");
             }
-            //var user = new User
-            //{
-            //    UserName = model.Username
-            //};
-
-            //var result = await _userManager.CreateAsync(user, model.Password);
-
-            //if (result.Succeeded)
-            //{
-            //    bool isPersistant = false;
-            //    await _signInManager.SignInAsync(user, isPersistant);
-            //    return RedirectToAction("Index", "Home");
-            //}
-            else
-            {
-                //foreach (var error in result.Errors)
-                //{
-                //    ModelState.AddModelError("", error.Description);
-                //}
-            }
             return View(model);
-        }
-
-         
+        } 
     }
 }
 
