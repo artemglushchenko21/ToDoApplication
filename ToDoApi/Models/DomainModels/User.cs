@@ -11,5 +11,6 @@ namespace ToDoApi.Models.DomainModels
     {
         [NotMapped]
         public IList<string> RoleNames { get; set; }
+
     }
 }
