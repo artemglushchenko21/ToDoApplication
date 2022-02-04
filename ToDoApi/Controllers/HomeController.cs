@@ -5,9 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Models.Data;
+using ToDoMvc;
 //using ToDoWebApi.Models;
 
 namespace ToDoApi.Controllers
@@ -73,7 +75,7 @@ namespace ToDoApi.Controllers
             return View(tasks);
         }
 
-        public IActionResult Add()
+        public IActionResult AddTask()
         {
             ViewBag.Categories = _context.Categories.ToList();
             ViewBag.Statuses = _context.Statuses.ToList();
@@ -81,13 +83,13 @@ namespace ToDoApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(ToDo task)
+        public async Task<IActionResult> AddTask(ToDo task)
         {
             if (ModelState.IsValid)
             {
-                _context.ToDos.Add(task);
-                _context.SaveChanges();
+                HttpResponseMessage response = await GlobalVariables.WebApiClient.PostAsJsonAsync("ToDo", task);
                 return RedirectToAction("Index");
+
             }
             else
             {

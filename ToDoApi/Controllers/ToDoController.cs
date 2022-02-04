@@ -21,7 +21,7 @@ namespace ToDoWebApi.Controllers
             _context = context;
         }
 
-        // GET: api/ToDoes
+        // GET: api/ToDos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ToDo>>> GetToDos()
         {

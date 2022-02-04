@@ -26,7 +26,7 @@
                 <ul class="navbar-nav ml-auto">
                     <!-- These Login buttons and links could be a partial class or a view component -->
                     @using Microsoft.AspNetCore.Identity
-                    @*@using Microsoft.AspNet.Identity;*@
+                    @using Microsoft.AspNet.Identity;
                     @inject SignInManager<UserModel> signInManager
                     @if (signInManager.IsSignedIn(User))
                     {
@@ -37,6 +37,7 @@
                                 <input type="submit" value="Log Out"
                                        class="btn btn-outline-light" />
                                 <span class="text-light">@User.Identity.Name</span>
+                                <span class="text-light">@User.Identity.GetUserId()</span>
                             </form>
                         </li>
                     }
