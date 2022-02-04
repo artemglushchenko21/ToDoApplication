@@ -63,27 +63,14 @@ namespace ToDoApi.Controllers
 
             ModelState.AddModelError("", "Invalid username/password.");
             return View(model);
-            //    if (ModelState.IsValid)
-            //    {
-            //        HttpResponseMessage response = await GlobalVariables.WebApiClient.PostAsJsonAsync("Login", model);
+        }
 
-            //        var canLogIn = response.Content.ReadAsAsync<bool>().Result;
 
-            //        if (canLogIn == false)
-            //        {
-            //            ModelState.AddModelError("", "Invalid username or password.");
-            //        }
-            //        else
-            //        {
-            //            return RedirectToAction("Index", "Home");
-            //        }
-            //    }
-
-            //    var result = await _signInManager.PasswordSignInAsync(
-            //model.Username, model.Password, isPersistent: true,
-            //lockoutOnFailure: false);
-
-            //    return RedirectToAction("Index", "Home");
+        [HttpPost]
+        public async Task<IActionResult> LogOut()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Models.Data;
 using ToDoMvc;
-//using ToDoWebApi.Models;
+
 
 namespace ToDoApi.Controllers
 {
@@ -24,11 +25,6 @@ namespace ToDoApi.Controllers
             _context = applicationDbContext;
             _logger = logger;
         }
-
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
 
         public IActionResult Privacy()
         {
@@ -44,34 +40,20 @@ namespace ToDoApi.Controllers
 
         public IActionResult Index(string id)
         {
-            // load current filters and data needed for filter drop downs in ViewBag
             var filters = new Filters(id);
             ViewBag.Filters = filters;
             ViewBag.Categories = _context.Categories.ToList();
             ViewBag.Statuses = _context.Statuses.ToList();
             ViewBag.DueFilters = Filters.DueFilterValues;
 
-            // get ToDo objects from database based on current filters
-            IQueryable<ToDo> query = _context.ToDos.Include(t => t.Category).Include(t => t.Status);
-            if (filters.HasCategory)
-            {
-                query = query.Where(t => t.CategoryId == filters.CategoryId);
-            }
-            if (filters.HasStatus)
-            {
-                query = query.Where(t => t.StatusId == filters.StatusId);
-            }
-            if (filters.HasDue)
-            {
-                var today = DateTime.Today;
-                if (filters.IsPast)
-                    query = query.Where(t => t.DueDate < today);
-                else if (filters.IsFuture)
-                    query = query.Where(t => t.DueDate > today);
-                else if (filters.IsToday)
-                    query = query.Where(t => t.DueDate == today);
-            }
-            var tasks = query.OrderBy(t => t.DueDate).ToList();
+            IEnumerable<ToDo> tasks;
+
+           GlobalVariables.WebApiClient.DefaultRequestHeaders.Add("UserId", User.Identity.GetUserId());
+
+            HttpResponseMessage response = GlobalVariables.WebApiClient.GetAsync("ToDo").Result;
+
+            tasks = response.Content.ReadAsAsync<IEnumerable<ToDo>>().Result;
+
             return View(tasks);
         }
 
@@ -87,7 +69,7 @@ namespace ToDoApi.Controllers
         {
             if (ModelState.IsValid)
             {
-                HttpResponseMessage response = await GlobalVariables.WebApiClient.PostAsJsonAsync("ToDo", task);
+                await GlobalVariables.WebApiClient.PostAsJsonAsync("ToDo", task);
                 return RedirectToAction("Index");
 
             }

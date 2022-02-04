@@ -11,11 +11,6 @@ using ToDoApi.Models;
 using ToDoApi.Models.Data;
 using ToDoApi.Models.ViewModels;
 
-//using System.Web.Http.Description;
-//using ToDoWebApi.Data;
-//using ToDoWebApi.Models;
-//using ToDoWebApi.Models.ViewModels;
-
 namespace ToDoWebApi.Controllers
 {
     [Route("api/[controller]")]
@@ -44,7 +39,6 @@ namespace ToDoWebApi.Controllers
         }
 
         [HttpPost]
-       // [ResponseType(typeof(bool))]
         public async Task<bool> LogIn(LoginViewModel model)
         {
             var userList = _context.Users.ToList();
