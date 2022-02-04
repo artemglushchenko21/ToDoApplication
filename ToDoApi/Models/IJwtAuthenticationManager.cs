@@ -7,6 +7,6 @@ namespace ToDoMvc.Models
 {
    public interface IJwtAuthenticationManager
     {
-       string Authenticate(string userName, string password);
+       Task<string> Authenticate(string userName, string password);
     }
 }

@@ -6,6 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using ToDoApi.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ToDoMvc.Models
 {
@@ -15,18 +18,21 @@ namespace ToDoMvc.Models
          { {"test1", "password1"}, {"test2", "password2" } };
 
         private readonly string _key;
+        private readonly UserManager<UserModel> _userManager;
+        private readonly SignInManager<UserModel> _signInManager;
 
         public JwtAuthenticationManager(string key)
         {
             _key = key;
         }
 
-        public string Authenticate(string userName, string password)
+        public async Task<string> Authenticate(string userName, string password)
         {
-            if (!users.Any(u => u.Key == userName && u.Value == password))
-            {
-                return null;
-            }
+
+            //if (await IsValidUserNameAndPassword(userName, password))
+            //{
+            //    return null;
+            //}
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.ASCII.GetBytes(_key);
@@ -44,6 +50,23 @@ namespace ToDoMvc.Models
 
             var token = tokenHandler.CreateToken(tokenDesriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+       public class Helper
+        {
+            private readonly UserManager<UserModel> _userManager;
+            private readonly SignInManager<UserModel> _signInManager;
+
+            public Helper(UserManager<UserModel> userManager, SignInManager<UserModel> signInManager )
+            {
+                _userManager = userManager;
+                _signInManager = signInManager;
+            }
+            private async Task<bool> IsValidUserNameAndPassword([FromServices] SignInManager<UserModel> _signInManager, string username, string password)
+            {
+                var user = await _userManager.FindByEmailAsync(username);
+                return await _userManager.CheckPasswordAsync(user, password);
+            }
         }
     }
 }

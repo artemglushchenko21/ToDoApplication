@@ -49,8 +49,12 @@ namespace ToDoApi.Controllers
         [Route("/GetUserById")]
         public async Task<UserModel> GetUserById(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            return user;
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return await _userManager.FindByIdAsync(userId);
+
+            //var user = await _userManager.FindByIdAsync(id);
+            //return user;
         }
 
         [HttpPost]

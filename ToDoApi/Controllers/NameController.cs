@@ -1,25 +1,32 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ToDoApi.Models;
 using ToDoMvc.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ToDoMvc.Controllers
 {
-    [Authorize]
+   // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class NameController : ControllerBase
     {
         private readonly IJwtAuthenticationManager _jwtAuthenticationManager;
+        private readonly UserManager<UserModel> _userManager;
+        private readonly SignInManager<UserModel> _signInManager;
 
-        public NameController(IJwtAuthenticationManager jwtAuthenticationManager)
+        public NameController(IJwtAuthenticationManager jwtAuthenticationManager, SignInManager<UserModel> signInManager, UserManager<UserModel> userManager)
         {
             _jwtAuthenticationManager = jwtAuthenticationManager;
+            _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         // GET: api/<NameController>
@@ -36,16 +43,31 @@ namespace ToDoMvc.Controllers
             return "value";
         }
 
-        [AllowAnonymous]
+      //  [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] UserCred userCred)
+        public async Task<IActionResult> Authenticate(string userName, string password, string grant_type)
         {
-            var token = _jwtAuthenticationManager.Authenticate(userCred.UserName, userCred.Password);
+            string user = HttpContext.Request.Headers["username"].ToString();
+            string pass = HttpContext.Request.Headers["password"].ToString();
+
+            if(await IsValidUserNameAndPassword(user, pass) == false)
+            {
+                return Unauthorized();
+            }
+
+
+            var token = _jwtAuthenticationManager.Authenticate(user, pass);
             if (token == null)
             {
                 return Unauthorized();
             }
             return Ok(token);
+        }
+
+        private async Task<bool> IsValidUserNameAndPassword(string username, string password)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            return await _userManager.CheckPasswordAsync(user, password);
         }
     }
 }
