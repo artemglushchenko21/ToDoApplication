@@ -1,8 +1,5 @@
-﻿@{
-    // use current controller or area to determine if tab is active
-    var current = ViewContext.RouteData.Values["area"]?.ToString() ??
-        ViewContext.RouteData.Values["controller"]?.ToString();
-}
+﻿@{ var current = ViewContext.RouteData.Values["area"]?.ToString() ??
+                       ViewContext.RouteData.Values["controller"]?.ToString(); }
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,20 +21,19 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
-                    <!-- These Login buttons and links could be a partial class or a view component -->
-                    @using Microsoft.AspNetCore.Identity
                     @using Microsoft.AspNet.Identity;
-                    @inject SignInManager<UserModel> signInManager
-                    @if (signInManager.IsSignedIn(User))
+                    @if (User.Identity.IsAuthenticated)
                     {
-                        // signed-in user - Log Out button and username
                         <li class="nav-item">
                             <form method="post" asp-action="LogOut" asp-controller="Account"
                                   asp-area="">
-                                <input type="submit" value="Log Out"
-                                       class="btn btn-outline-light" />
-                                <span class="text-light">@User.Identity.Name</span>
-                                <span class="text-light">@User.Identity.GetUserId()</span>
+                                <input type="submit" value="Log Out" class="nav-link btn btn-link bg-dark" />
+                                @*<a asp-action="LogOut" asp-controller="Account"
+                                       asp-area="" class="nav-link">
+                                        Log Out
+                                    </a>*@
+                                @*<span class="text-light">@User.Identity.Name</span>
+                                    <span class="text-light">@User.Identity.GetUserId()</span>*@
                             </form>
                         </li>
                     }
@@ -45,7 +41,6 @@
                     {
                         var action = ViewContext.RouteData.Values["action"]?.ToString();
 
-                        // anonymous user - Register link and Log In button
                         <li class="nav-item @Nav.Active("Register", action)">
                             <a asp-action="Register" asp-controller="Account"
                                asp-area="" class="nav-link">
@@ -54,7 +49,7 @@
                         </li>
                         <li class="nav-item">
                             <a asp-action="Login" asp-controller="Account"
-                               asp-area="" class="nav-link">Log In</a>
+                               asp-area="" class="nav-link">Sign In</a>
                         </li>
                     }
 

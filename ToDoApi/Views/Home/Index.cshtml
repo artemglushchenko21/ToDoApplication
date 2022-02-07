@@ -30,14 +30,14 @@
                     "StatusId", "Name", ViewBag.Filters.StatusId))">
                     <option value="all">All</option>
                 </select>
-            </div>        
+            </div>
             <button type="submit" class="btn btn-primary">Filter</button>
             <a asp-action="Index" asp-route-id="" class="btn btn-primary">Clear</a>
         </form>
     </div>
     <div class="col-sm-10">
 
-        <a asp-action="AddTask"><b>Add new task</b></a>
+        <a asp-action="AddTask" class="btn btn-primary mt-2"><b>Add new task</b></a>
 
         <table class="table table-bordered table-striped mt-2">
             <thead>
@@ -50,6 +50,7 @@
                 </tr>
             </thead>
             <tbody>
+                @if (Model == null) return;
                 @foreach (ToDo task in Model)
                 {
                     string overdue = Overdue(task);

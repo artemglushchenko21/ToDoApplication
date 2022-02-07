@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,19 +12,17 @@ using ToDoMvc.Models;
 
 namespace ToDoMvc.Controllers
 {
-   // [Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class NameController : ControllerBase
     {
         private readonly IJwtAuthenticationManager _jwtAuthenticationManager;
         private readonly UserManager<UserModel> _userManager;
-        private readonly SignInManager<UserModel> _signInManager;
 
-        public NameController(IJwtAuthenticationManager jwtAuthenticationManager, SignInManager<UserModel> signInManager, UserManager<UserModel> userManager)
+        public NameController(IJwtAuthenticationManager jwtAuthenticationManager, UserManager<UserModel> userManager)
         {
             _jwtAuthenticationManager = jwtAuthenticationManager;
-            _signInManager = signInManager;
             _userManager = userManager;
         }
 
@@ -43,14 +40,14 @@ namespace ToDoMvc.Controllers
             return "value";
         }
 
-      //  [AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate(string userName, string password, string grant_type)
         {
             string user = HttpContext.Request.Headers["username"].ToString();
             string pass = HttpContext.Request.Headers["password"].ToString();
 
-            if(await IsValidUserNameAndPassword(user, pass) == false)
+            if (await IsValidUserNameAndPassword(user, pass) == false)
             {
                 return Unauthorized();
             }
@@ -61,6 +58,7 @@ namespace ToDoMvc.Controllers
             {
                 return Unauthorized();
             }
+
             return Ok(token);
         }
 

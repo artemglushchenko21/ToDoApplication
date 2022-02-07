@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace ToDoMvc.Models
 {
-   public interface IJwtAuthenticationManager
+    public interface IJwtAuthenticationManager
     {
-       Task<string> Authenticate(string userName, string password);
+        dynamic Authenticate(string userName, string password);
     }
 }

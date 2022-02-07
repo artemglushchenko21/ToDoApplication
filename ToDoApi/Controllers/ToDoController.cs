@@ -21,27 +21,28 @@ namespace ToDoWebApi.Controllers
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<UserModel> _signInManager;
         private readonly Microsoft.AspNetCore.Identity.UserManager<UserModel> _userManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ToDoController(ApplicationDbContext context, SignInManager<UserModel> signInManager, Microsoft.AspNetCore.Identity.UserManager<UserModel> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: api/ToDos
         [HttpGet]
-       // [Authorize]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<ToDo>>> GetToDos()
         {
             //return await _context.ToDos.ToListAsync();
 
-            string userId = HttpContext.Request.Headers["UserId"].ToString();
+            string userId = User.Identity.GetUserId();
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            //string userId = User.Identity.GetUserId();//User.FindFirstValue(ClaimTypes.NameIdentifier); //HttpContext.Request.Headers["UserId"].ToString();
             string name = User.Identity.Name;
 
-            IQueryable<ToDo> query = _context.ToDos.Include(t => t.Category).Include(t => t.Status).Where(t => t.UserId == userId);
+            IQueryable<ToDo> query = _context.ToDos.Include(t => t.Category).Include(t => t.Status).Where(t => t.UserId == user.Id);
 
             string filterId = null;
             var filters = new Filters(filterId);
@@ -119,6 +120,10 @@ namespace ToDoWebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<ToDo>> PostToDo(ToDo toDo)
         {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            toDo.UserId = user.Id;
+
             _context.ToDos.Add(toDo);
             await _context.SaveChangesAsync();
 

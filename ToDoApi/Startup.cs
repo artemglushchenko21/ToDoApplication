@@ -37,7 +37,11 @@ namespace ToDoApi
         {
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddMemoryCache();
-            services.AddSession();
+            //services.AddSession();
+
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(60);
+            });
 
             services.AddControllersWithViews().AddNewtonsoftJson();
 
@@ -111,7 +115,22 @@ namespace ToDoApi
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseSession();
+
             app.UseRouting();
+
+
+            app.Use(async (context, next) =>
+            {
+                var JWToken = context.Session.GetString("JWToken");
+                if (!string.IsNullOrEmpty(JWToken))
+                {
+                    context.Request.Headers.Add("Authorization", "Bearer " + JWToken);
+                }
+                await next();
+            });
+
+
 
             app.UseAuthentication();
             app.UseAuthorization();

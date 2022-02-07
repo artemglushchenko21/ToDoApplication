@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -46,9 +47,9 @@ namespace ToDoApi.Controllers
             ViewBag.Statuses = _context.Statuses.ToList();
             ViewBag.DueFilters = Filters.DueFilterValues;
 
-            IEnumerable<ToDo> tasks;
+            IEnumerable<ToDo> tasks = null;
 
-           GlobalVariables.WebApiClient.DefaultRequestHeaders.Add("UserId", User.Identity.GetUserId());
+            GlobalVariables.WebApiClient.DefaultRequestHeaders.Add("UserId", User.Identity.GetUserId());
 
             HttpResponseMessage response = GlobalVariables.WebApiClient.GetAsync("ToDo").Result;
 
@@ -57,6 +58,7 @@ namespace ToDoApi.Controllers
             return View(tasks);
         }
 
+        [Authorize]
         public IActionResult AddTask()
         {
             ViewBag.Categories = _context.Categories.ToList();

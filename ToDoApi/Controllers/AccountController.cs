@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,7 @@ using ToDoApi.Models.Data;
 using ToDoApi.Models.DomainModels;
 using ToDoApi.Models.ViewModels;
 using ToDoMvc;
+using ToDoMvc.Models;
 
 namespace ToDoApi.Controllers
 {
@@ -63,73 +66,73 @@ namespace ToDoApi.Controllers
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        var token = await response.Content.ReadAsAsync<string>();
-                        //return result;
+                        var token = await response.Content.ReadAsAsync<AuthenticatedUser>();
+                        await GetLoggedInUserInfo(token.Access_Token);
+
+                        HttpContext.Session.SetString("JWToken", token.Access_Token);
+
+                        var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, isPersistent: true, lockoutOnFailure: false);
+                        if (result.Succeeded)
+                        {
+                            if (!string.IsNullOrEmpty(model.ReturnUrl) &&
+                                Url.IsLocalUrl(model.ReturnUrl))
+                            {
+                                return Redirect(model.ReturnUrl);
+                            }
+                            else
+                            {
+                                return RedirectToAction("Index", "Home");
+                            }
+                        }
                     }
                     else
                     {
                         throw new Exception(response.ReasonPhrase);
                     }
                 }
-                //var result = await _signInManager.PasswordSignInAsync(
-                //    model.Username, model.Password, isPersistent: true,
-                //    lockoutOnFailure: false);
-
-                //if (result.Succeeded)
-                //{
-                //    if (!string.IsNullOrEmpty(model.ReturnUrl) &&
-                //        Url.IsLocalUrl(model.ReturnUrl))
-                //    {
-                //        return Redirect(model.ReturnUrl);
-                //    }
-                //    else
-                //    {
-                //        return RedirectToAction("Index", "Home");
-                //    }
-                //}
             }
 
             ModelState.AddModelError("", "Invalid username/password.");
             return View(model);
-
-
-
         }
 
-        //public async Task GetLoggedInUserInfo(string token)
-        //{
-        //    GlobalVariables.WebApiClient.DefaultRequestHeaders.Clear();
-        //    GlobalVariables.WebApiClient.DefaultRequestHeaders.Accept.Clear();
-        //    GlobalVariables.WebApiClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-        //    GlobalVariables.WebApiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer { token }");
+        public async Task GetLoggedInUserInfo(string token)
+        {
+            GlobalVariables.WebApiClient.DefaultRequestHeaders.Clear();
+            GlobalVariables.WebApiClient.DefaultRequestHeaders.Accept.Clear();
+            GlobalVariables.WebApiClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            GlobalVariables.WebApiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer { token }");
 
-        //    //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        //    //return _userData.GetUserById(userId).First();
+            //return _userData.GetUserById(userId).First();
 
-        //    //using (HttpResponseMessage response = await GlobalVariables.WebApiClient.GetAsync("/api/User"))
-        //    //{
-        //    //    if (response.IsSuccessStatusCode)
-        //    //    {
-        //    //        var result = await response.Content.ReadAsAsync<LoggedInUserModel>();
-        //    //        _loggedInUser.CreatedDate = result.CreatedDate;
-        //    //        _loggedInUser.EmailAddress = result.EmailAddress;
-        //    //        _loggedInUser.FirstName = result.FirstName;
-        //    //        _loggedInUser.Id = result.Id;
-        //    //        _loggedInUser.LastName = result.LastName;
-        //    //        _loggedInUser.Token = token;
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        throw new Exception(response.ReasonPhrase);
-        //    //    }
-        //    //}
-        //}
+            //using (HttpResponseMessage response = await GlobalVariables.WebApiClient.GetAsync("/api/User"))
+            //{
+            //    if (response.IsSuccessStatusCode)
+            //    {
+            //        var result = await response.Content.ReadAsAsync<LoggedInUserModel>();
+            //        _loggedInUser.CreatedDate = result.CreatedDate;
+            //        _loggedInUser.EmailAddress = result.EmailAddress;
+            //        _loggedInUser.FirstName = result.FirstName;
+            //        _loggedInUser.Id = result.Id;
+            //        _loggedInUser.LastName = result.LastName;
+            //        _loggedInUser.Token = token;
+            //    }
+            //    else
+            //    {
+            //        throw new Exception(response.ReasonPhrase);
+            //    }
+            //}
+        }
 
         [HttpPost]
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
+
+            HttpContext.Session.Clear();
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -157,4 +160,3 @@ namespace ToDoApi.Controllers
         }
     }
 }
-
