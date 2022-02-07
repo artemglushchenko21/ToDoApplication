@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using System.Net;
 
 namespace ToDoWebApi.Controllers
 {
@@ -34,13 +35,7 @@ namespace ToDoWebApi.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<ToDo>>> GetToDos()
         {
-            //return await _context.ToDos.ToListAsync();
-
-            string userId = User.Identity.GetUserId();
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
-
-            //string userId = User.Identity.GetUserId();//User.FindFirstValue(ClaimTypes.NameIdentifier); //HttpContext.Request.Headers["UserId"].ToString();
-            string name = User.Identity.Name;
 
             IQueryable<ToDo> query = _context.ToDos.Include(t => t.Category).Include(t => t.Status).Where(t => t.UserId == user.Id);
 
@@ -87,8 +82,12 @@ namespace ToDoWebApi.Controllers
         // PUT: api/ToDoes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutToDo(int id, ToDo toDo)
         {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            toDo.UserId = user.Id;
+
             if (id != toDo.Id)
             {
                 return BadRequest();
@@ -116,7 +115,6 @@ namespace ToDoWebApi.Controllers
         }
 
         // POST: api/ToDoes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<ToDo>> PostToDo(ToDo toDo)
         {

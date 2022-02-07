@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ToDoApi</title>
+    <title>@ViewData["Title"]  ToDoApi</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -15,7 +15,7 @@
             <div class="collapse navbar-collapse" id="menu">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item @Nav.Active("Home", current)">
-                        <a class="nav-link" asp-action="Index" asp-controller="Home" asp-area="">
+                        <a class="nav-link" asp-action="ShowTasks" asp-controller="Home" asp-area="">
                             <span class="fas fa-home"></span>&nbsp;Home
                         </a>
                     </li>
@@ -29,11 +29,11 @@
                                   asp-area="">
                                 <input type="submit" value="Log Out" class="nav-link btn btn-link bg-dark" />
                                 @*<a asp-action="LogOut" asp-controller="Account"
-                                       asp-area="" class="nav-link">
-                                        Log Out
-                                    </a>*@
+                       asp-area="" class="nav-link">
+                        Log Out
+                    </a>*@
                                 @*<span class="text-light">@User.Identity.Name</span>
-                                    <span class="text-light">@User.Identity.GetUserId()</span>*@
+                    <span class="text-light">@User.Identity.GetUserId()</span>*@
                             </form>
                         </li>
                     }
@@ -47,17 +47,23 @@
                                 <span class="fas fa-edit"></span>&nbsp;Register
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item  @Nav.Active("LogIn", action)">
                             <a asp-action="Login" asp-controller="Account"
-                               asp-area="" class="nav-link">Sign In</a>
+                               asp-area="" class="nav-link">Log In</a>
                         </li>
                     }
 
-                    <li class="nav-item @Nav.Active("Admin", current)">
-                        <a class="nav-link" asp-action="Index" asp-controller="Book" asp-area="Admin">
-                            <span class="fas fa-cog"></span>&nbsp;Admin
-                        </a>
-                    </li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        var action = ViewContext.RouteData.Values["action"]?.ToString();
+
+                        <li class="nav-item @Nav.Active("UserProfile", action)">
+                            <a class="nav-link" asp-action="UserProfile" asp-controller="Home" asp-area="">
+                                <span class="fas fa-cog"></span>&nbsp;@(User.Identity.Name)
+                            </a>
+                        </li>
+                    }
+
                 </ul>
             </div>
         </nav>

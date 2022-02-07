@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Models.Data;
+using ToDoApi.Models.ViewModels;
 using ToDoMvc;
 
 
@@ -39,7 +40,13 @@ namespace ToDoApi.Controllers
         }
 
 
-        public IActionResult Index(string id)
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult ShowTasks(string id)
         {
             var filters = new Filters(id);
             ViewBag.Filters = filters;
@@ -67,13 +74,21 @@ namespace ToDoApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddTask(ToDo task)
+        public async Task<IActionResult> SaveTask(ToDo task)
         {
             if (ModelState.IsValid)
             {
-                await GlobalVariables.WebApiClient.PostAsJsonAsync("ToDo", task);
-                return RedirectToAction("Index");
+                int taskId = task.Id;
 
+                if (taskId == 0)
+                {
+                    var result = await GlobalVariables.WebApiClient.PostAsJsonAsync("ToDo", task);
+                }
+                else
+                {
+                    var result = await GlobalVariables.WebApiClient.PutAsJsonAsync("ToDo/" + taskId.ToString(), task);
+                }               
+                return RedirectToAction(nameof(ShowTasks));
             }
             else
             {
@@ -87,26 +102,57 @@ namespace ToDoApi.Controllers
         public IActionResult Filter(string[] filter)
         {
             string id = string.Join('-', filter);
-            return RedirectToAction("Index", new { ID = id });
+            return RedirectToAction(nameof(ShowTasks), new { ID = id });
         }
 
         [HttpPost]
-        public IActionResult Edit([FromRoute] string id, ToDo selected)
+        public IActionResult CompleteTask([FromRoute] string id, ToDo selected)
         {
-            if (selected.StatusId == null)
-            {
-                _context.ToDos.Remove(selected);
-            }
-            else
-            {
-                string newStatusId = selected.StatusId;
-                selected = _context.ToDos.Find(selected.Id);
-                selected.StatusId = newStatusId;
-                _context.ToDos.Update(selected);
-            }
+            string newStatusId = selected.StatusId;
+            selected = _context.ToDos.Find(selected.Id);
+            selected.StatusId = newStatusId;
+            _context.ToDos.Update(selected);
+
             _context.SaveChanges();
 
-            return RedirectToAction("Index", new { ID = id });
+            return RedirectToAction(nameof(ShowTasks), new { ID = id });
+        }
+
+        [HttpGet]
+        public IActionResult EditTask([FromRoute] string id, ToDo selected)
+        {
+            string taskId = selected.Id.ToString();
+
+            HttpResponseMessage response = GlobalVariables.WebApiClient.GetAsync("ToDo/" + taskId).Result;
+
+            //    return RedirectToAction(nameof(AddTask), new { ID = id });
+            var result = response.Content.ReadAsAsync<ToDo>().Result;
+
+            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Statuses = _context.Statuses.ToList();
+
+            ModelState.Clear();
+
+            return View(nameof(AddTask),result);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteTask([FromRoute] string id, ToDo selected)
+        {
+            string taskId = selected.Id.ToString();
+
+            HttpResponseMessage response = GlobalVariables.WebApiClient.DeleteAsync("ToDo/" + taskId).Result;
+
+            return RedirectToAction(nameof(ShowTasks));
+        }
+
+        [HttpGet]
+        public IActionResult UserProfile()
+        {
+            UserModel user = new();
+            user.UserName = User.Identity.Name;
+
+            return View("UserProfile", user);
         }
     }
 }

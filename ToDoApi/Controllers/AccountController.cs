@@ -25,7 +25,9 @@ namespace ToDoApi.Controllers
         private SignInManager<UserModel> _signInManager;
         private ApplicationDbContext _context;
 
-        public AccountController(UserManager<UserModel> userManager, SignInManager<UserModel> signInManager, ApplicationDbContext applicationDbContext)
+        public AccountController(UserManager<UserModel> userManager,
+                                 SignInManager<UserModel> signInManager,
+                                 ApplicationDbContext applicationDbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -71,9 +73,10 @@ namespace ToDoApi.Controllers
 
                         HttpContext.Session.SetString("JWToken", token.Access_Token);
 
-                        var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, isPersistent: true, lockoutOnFailure: false);
-                        if (result.Succeeded)
-                        {
+                        //var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, 
+                        //                                        isPersistent: true, lockoutOnFailure: false);
+                        //if (result.Succeeded)
+                        //{
                             if (!string.IsNullOrEmpty(model.ReturnUrl) &&
                                 Url.IsLocalUrl(model.ReturnUrl))
                             {
@@ -81,9 +84,9 @@ namespace ToDoApi.Controllers
                             }
                             else
                             {
-                                return RedirectToAction("Index", "Home");
+                                return RedirectToAction("ShowTasks", "Home");
                             }
-                        }
+                        //}
                     }
                     else
                     {
