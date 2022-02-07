@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ToDoApi.Models
+namespace ToDoApi.Models.ToDoTaskElements
 {
-    public class Status
+    public class Category
     {
-        public string StatusId { get; set; }
+        public string CategoryId { get; set; }
         public string Name { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ToDoApi.Models.DomainModels;
-using ToDoApi.Models;
+using ToDoApi.Models.ToDoTaskElements;
 
 namespace ToDoApi.Models.Data
 {

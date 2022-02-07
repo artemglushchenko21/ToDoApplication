@@ -10,7 +10,7 @@ using ToDoApi.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ToDoMvc.Models
+namespace ToDoMvc.Services.Authentication
 {
     public class JwtAuthenticationManager : IJwtAuthenticationManager
     {
@@ -21,7 +21,7 @@ namespace ToDoMvc.Models
             _key = key;
         }
 
-        public dynamic Authenticate(string userName, string password)
+        public dynamic GenerateToken(string userName, string password)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.ASCII.GetBytes(_key);

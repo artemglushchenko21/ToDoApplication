@@ -20,6 +20,8 @@ using ToDoApi.Models;
 using ToDoApi.Models.Data;
 using ToDoApi.Models.DomainModels;
 using ToDoMvc.Models;
+using ToDoMvc.Models.Helpers;
+using ToDoMvc.Services.Authentication;
 
 namespace ToDoApi
 {
@@ -46,7 +48,6 @@ namespace ToDoApi
             services.AddControllersWithViews().AddNewtonsoftJson();
 
             var key = "ArtemHlushchenkoTokenKey";
-
 
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -78,6 +79,8 @@ namespace ToDoApi
             });
 
             services.AddSingleton<IJwtAuthenticationManager>(new JwtAuthenticationManager(key));
+
+            services.AddSingleton<IApiHelper, ApiHelper>();
 
             //  services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

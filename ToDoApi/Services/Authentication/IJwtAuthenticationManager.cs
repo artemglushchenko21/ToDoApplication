@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ToDoMvc.Models
+namespace ToDoMvc.Services.Authentication
 {
     public interface IJwtAuthenticationManager
     {
-        dynamic Authenticate(string userName, string password);
+        dynamic GenerateToken(string userName, string password);
     }
 }

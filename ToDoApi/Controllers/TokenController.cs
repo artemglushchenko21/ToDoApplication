@@ -7,53 +7,35 @@ using System.Linq;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoMvc.Models;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using ToDoMvc.Services.Authentication;
 
 namespace ToDoMvc.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class NameController : ControllerBase
+    public class TokenController : ControllerBase
     {
         private readonly IJwtAuthenticationManager _jwtAuthenticationManager;
         private readonly UserManager<UserModel> _userManager;
 
-        public NameController(IJwtAuthenticationManager jwtAuthenticationManager, UserManager<UserModel> userManager)
+        public TokenController(IJwtAuthenticationManager jwtAuthenticationManager, UserManager<UserModel> userManager)
         {
             _jwtAuthenticationManager = jwtAuthenticationManager;
             _userManager = userManager;
         }
 
-        // GET: api/<NameController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<NameController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate(string userName, string password, string grant_type)
+        public async Task<IActionResult> Authenticate(LoginData loginData)
         {
-            string user = HttpContext.Request.Headers["username"].ToString();
-            string pass = HttpContext.Request.Headers["password"].ToString();
-
-            if (await IsValidUserNameAndPassword(user, pass) == false)
+            if (await IsValidUserNameAndPassword(loginData.Username, loginData.Password) == false)
             {
                 return Unauthorized();
             }
 
-
-            var token = _jwtAuthenticationManager.Authenticate(user, pass);
+            var token = _jwtAuthenticationManager.GenerateToken(loginData.Username, loginData.Password);
             if (token == null)
             {
                 return Unauthorized();

@@ -13,10 +13,7 @@ using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Models.Data;
 using ToDoApi.Models.ViewModels;
-//using ToDoWebApi.Controllers;
-//using ToDoWebApi.Data;
-//using ToDoWebApi.Models;
-//using ToDoWebApi.Models.ViewModels;
+
 
 namespace ToDoApi.Controllers
 {

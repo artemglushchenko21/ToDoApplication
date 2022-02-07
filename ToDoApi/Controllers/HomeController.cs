@@ -11,9 +11,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Models.Data;
+using ToDoApi.Models.ToDoTaskElements;
 using ToDoApi.Models.ViewModels;
 using ToDoMvc;
-
+using ToDoMvc.Models.Helpers;
 
 namespace ToDoApi.Controllers
 {
@@ -21,10 +22,12 @@ namespace ToDoApi.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly IApiHelper _apiHelper;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext applicationDbContext)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext applicationDbContext, IApiHelper apiHelper)
         {
             _context = applicationDbContext;
+            _apiHelper = apiHelper;
             _logger = logger;
         }
 
@@ -56,9 +59,9 @@ namespace ToDoApi.Controllers
 
             IEnumerable<ToDo> tasks = null;
 
-            GlobalVariables.WebApiClient.DefaultRequestHeaders.Add("UserId", User.Identity.GetUserId());
+            _apiHelper.ApiClient.DefaultRequestHeaders.Add("UserId", User.Identity.GetUserId());
 
-            HttpResponseMessage response = GlobalVariables.WebApiClient.GetAsync("ToDo").Result;
+            HttpResponseMessage response = _apiHelper.ApiClient.GetAsync("ToDo").Result;
 
             tasks = response.Content.ReadAsAsync<IEnumerable<ToDo>>().Result;
 
@@ -82,11 +85,11 @@ namespace ToDoApi.Controllers
 
                 if (taskId == 0)
                 {
-                    var result = await GlobalVariables.WebApiClient.PostAsJsonAsync("ToDo", task);
+                    var result = await _apiHelper.ApiClient.PostAsJsonAsync("ToDo", task);
                 }
                 else
                 {
-                    var result = await GlobalVariables.WebApiClient.PutAsJsonAsync("ToDo/" + taskId.ToString(), task);
+                    var result = await _apiHelper.ApiClient.PutAsJsonAsync("ToDo/" + taskId.ToString(), task);
                 }               
                 return RedirectToAction(nameof(ShowTasks));
             }
@@ -123,7 +126,7 @@ namespace ToDoApi.Controllers
         {
             string taskId = selected.Id.ToString();
 
-            HttpResponseMessage response = GlobalVariables.WebApiClient.GetAsync("ToDo/" + taskId).Result;
+            HttpResponseMessage response = _apiHelper.ApiClient.GetAsync("ToDo/" + taskId).Result;
 
             //    return RedirectToAction(nameof(AddTask), new { ID = id });
             var result = response.Content.ReadAsAsync<ToDo>().Result;
@@ -141,7 +144,7 @@ namespace ToDoApi.Controllers
         {
             string taskId = selected.Id.ToString();
 
-            HttpResponseMessage response = GlobalVariables.WebApiClient.DeleteAsync("ToDo/" + taskId).Result;
+            HttpResponseMessage response = _apiHelper.ApiClient.DeleteAsync("ToDo/" + taskId).Result;
 
             return RedirectToAction(nameof(ShowTasks));
         }

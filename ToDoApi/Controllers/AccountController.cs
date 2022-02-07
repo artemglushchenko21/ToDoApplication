@@ -16,22 +16,23 @@ using ToDoApi.Models.DomainModels;
 using ToDoApi.Models.ViewModels;
 using ToDoMvc;
 using ToDoMvc.Models;
+using ToDoMvc.Models.Helpers;
 
 namespace ToDoApi.Controllers
 {
     public class AccountController : Controller
     {
-        private UserManager<UserModel> _userManager;
         private SignInManager<UserModel> _signInManager;
         private ApplicationDbContext _context;
+        private readonly IApiHelper _apiHelper;
 
-        public AccountController(UserManager<UserModel> userManager,
-                                 SignInManager<UserModel> signInManager,
-                                 ApplicationDbContext applicationDbContext)
+        public AccountController(SignInManager<UserModel> signInManager,
+                                 ApplicationDbContext applicationDbContext,
+                                 IApiHelper apiHelper)
         {
-            _userManager = userManager;
             _signInManager = signInManager;
             _context = applicationDbContext;
+            _apiHelper = apiHelper;
         }
         public IActionResult Index()
         {
@@ -46,47 +47,31 @@ namespace ToDoApi.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> LogIn(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
-                string username = model.Username;
-                string password = model.Password;
+                var loginData = new LoginData { Username = model.Username, Password = model.Password };
 
-                var data = new FormUrlEncodedContent(new[]
-                {
-                new KeyValuePair<string, string>("grant_type", "password"),
-                new KeyValuePair<string, string>("username", username),
-                new KeyValuePair<string, string>("password", password)
-                });
-
-
-                GlobalVariables.WebApiClient.DefaultRequestHeaders.Add("username", username);
-                GlobalVariables.WebApiClient.DefaultRequestHeaders.Add("password", password);
-
-                using (HttpResponseMessage response = await GlobalVariables.WebApiClient.PostAsync("Name/authenticate", data))
+                using (HttpResponseMessage response = await _apiHelper.ApiClient.PostAsJsonAsync("Token/authenticate", loginData))
                 {
                     if (response.IsSuccessStatusCode)
                     {
                         var token = await response.Content.ReadAsAsync<AuthenticatedUser>();
-                        await GetLoggedInUserInfo(token.Access_Token);
+                        GetLoggedInUserInfo(token.Access_Token);
 
                         HttpContext.Session.SetString("JWToken", token.Access_Token);
 
-                        //var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, 
-                        //                                        isPersistent: true, lockoutOnFailure: false);
-                        //if (result.Succeeded)
-                        //{
-                            if (!string.IsNullOrEmpty(model.ReturnUrl) &&
-                                Url.IsLocalUrl(model.ReturnUrl))
-                            {
-                                return Redirect(model.ReturnUrl);
-                            }
-                            else
-                            {
-                                return RedirectToAction("ShowTasks", "Home");
-                            }
-                        //}
+                        if (!string.IsNullOrEmpty(model.ReturnUrl) &&
+                            Url.IsLocalUrl(model.ReturnUrl))
+                        {
+                            return Redirect(model.ReturnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("ShowTasks", "Home");
+                        }
                     }
                     else
                     {
@@ -99,12 +84,12 @@ namespace ToDoApi.Controllers
             return View(model);
         }
 
-        public async Task GetLoggedInUserInfo(string token)
+        public void GetLoggedInUserInfo(string token)
         {
-            GlobalVariables.WebApiClient.DefaultRequestHeaders.Clear();
-            GlobalVariables.WebApiClient.DefaultRequestHeaders.Accept.Clear();
-            GlobalVariables.WebApiClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-            GlobalVariables.WebApiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer { token }");
+            _apiHelper.ApiClient.DefaultRequestHeaders.Clear();
+            _apiHelper.ApiClient.DefaultRequestHeaders.Accept.Clear();
+            _apiHelper.ApiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _apiHelper.ApiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer { token }");
 
             //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -150,7 +135,7 @@ namespace ToDoApi.Controllers
         {
             if (ModelState.IsValid)
             {
-                HttpResponseMessage response = await GlobalVariables.WebApiClient.PostAsJsonAsync("User", model);
+                HttpResponseMessage response = await _apiHelper.ApiClient.PostAsJsonAsync("User", model);
 
                 if (response.IsSuccessStatusCode == false)
                 {

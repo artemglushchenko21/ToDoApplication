@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using System.Net;
+using ToDoApi.Models.ToDoTaskElements;
 
 namespace ToDoWebApi.Controllers
 {
@@ -80,7 +81,6 @@ namespace ToDoWebApi.Controllers
         }
 
         // PUT: api/ToDoes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         [Authorize]
         public async Task<IActionResult> PutToDo(int id, ToDo toDo)
