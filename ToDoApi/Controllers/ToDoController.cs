@@ -34,13 +34,12 @@ namespace ToDoWebApi.Controllers
         // GET: api/ToDos
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<ToDo>>> GetToDos()
+        public async Task<ActionResult<IEnumerable<ToDo>>> GetToDos(string filterId)
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
 
             IQueryable<ToDo> query = _context.ToDos.Include(t => t.Category).Include(t => t.Status).Where(t => t.UserId == user.Id);
 
-            string filterId = null;
             var filters = new Filters(filterId);
 
             if (filters.HasCategory)

@@ -56,15 +56,11 @@ namespace ToDoApi.Controllers
             ViewBag.Categories = _context.Categories.ToList();
             ViewBag.Statuses = _context.Statuses.ToList();
             ViewBag.DueFilters = Filters.DueFilterValues;
+         //  _apiHelper.ApiClient.DefaultRequestHeaders.Add("UserId", User.Identity.GetUserId());
 
-            IEnumerable<ToDo> tasks = null;
+            HttpResponseMessage response = _apiHelper.ApiClient.GetAsync("ToDo?filterId=" + id).Result;
 
-            _apiHelper.ApiClient.DefaultRequestHeaders.Add("UserId", User.Identity.GetUserId());
-
-            HttpResponseMessage response = _apiHelper.ApiClient.GetAsync("ToDo").Result;
-
-            tasks = response.Content.ReadAsAsync<IEnumerable<ToDo>>().Result;
-
+            IEnumerable<ToDo> tasks = response.Content.ReadAsAsync<IEnumerable<ToDo>>().Result;
             return View(tasks);
         }
 

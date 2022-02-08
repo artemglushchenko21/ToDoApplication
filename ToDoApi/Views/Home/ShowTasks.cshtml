@@ -4,8 +4,11 @@
     string Overdue(ToDo task) => task.Overdue ? "bg-warning" : "";
 }
 
-<div class="row">
+<div class="row mt-4">
     <div class="col-sm-2">
+        <a asp-action="AddTask" class="btn btn-info mt-2 mb-3 w-100">
+            <span class="fas fa-plus-circle"></span>&nbsp;Add task
+        </a>
         <form asp-action="Filter" method="post">
             <div class="form-group">
                 <label>Category:</label>
@@ -31,22 +34,19 @@
                     <option value="all">All</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-outline-primary">Filter</button>
-            <a asp-action="Index" asp-route-id="" class="btn btn-outline-primary">Clear</a>
+            <button type="submit" class="btn btn-outline-info">Filter</button>
+            <a asp-action="ShowTasks" asp-route-id="" class="btn btn-outline-info">Clear</a>
         </form>
     </div>
     <div class="col-sm-10">
-
-        <a asp-action="AddTask" class="btn btn-primary mt-2"><span class="far fa-plus-square"></span>&nbsp;Add a new task</a>
-
         <table class="table table-bordered table-striped mt-2">
             <thead>
                 <tr>
-                    <th>Description</th>
-                    <th>Category</th>
-                    <th>Due Date</th>
-                    <th>Status</th>
-                    <th class="w-25"></th>
+                    <th class="font-weight-light">Description</th>
+                    <th class="font-weight-light">Category</th>
+                    <th class="font-weight-light">Due Date</th>
+                    <th class="font-weight-light">Status</th>
+                    <th class="font-weight-light"></th>
                 </tr>
             </thead>
             <tbody>
@@ -59,43 +59,39 @@
                         <td>@task.Category.Name</td>
                         <td class="@overdue">@task.DueDate?.ToShortDateString()</td>
                         @*<td class="@overdue text-success">@task.Status.Name</td>*@
-                    <td>
-                        <form asp-action="CompleteTask" method="post"
-                              asp-route-id="@ViewBag.Filters.FilterString"
-                              class="mr-2" style="float: left">
-
-                            <select onchange="this.form.submit();" name="statusName" class="form-control"
-                                    asp-items="@(new SelectList(ViewBag.Statuses,"StatusId", "Name", (@task.StatusId)))">
-                            </select>
-
-                            <input type="hidden"
-                                   name="@nameof(ToDo.Id)" value="@task.Id" />
-                            <input type="hidden"
-                                   name="@nameof(ToDo.StatusId)" value="@task.StatusId" />
-
-                        </form>
-                        
-                    </td>
                         <td>
+                            <form asp-action="CompleteTask" method="post"
+                                  asp-route-id="@ViewBag.Filters.FilterString"
+                                  class="mr-2" style="float: left">
+
+                                <select onchange="this.form.submit();" name="statusName" class="form-control"
+                                        asp-items="@(new SelectList(ViewBag.Statuses,"StatusId", "Name", (@task.StatusId)))">
+                                </select>
+
+                                <input type="hidden"
+                                       name="@nameof(ToDo.Id)" value="@task.Id" />
+                                <input type="hidden"
+                                       name="@nameof(ToDo.StatusId)" value="@task.StatusId" />
+
+                            </form>
+
+                        </td>
+                        <td class="justify-content-center">
                             <form asp-action="CompleteTask" method="post"
                                   asp-route-id="@ViewBag.Filters.FilterString"
                                   class="mr-2" style="float: left">
 
                                 <input type="hidden"
                                        name="@nameof(ToDo.Id)" value="@task.Id" />
-
-                                @*<button type="submit" name="@nameof(ToDo.StatusId)" value="closed" class="btn btn-outline-primary btn-sm">
-                                    Done
-                                </button>*@
                             </form>
-                            <a asp-action="EditTask" asp-route-id=@task.Id class="btn btn-outline-primary btn-sm mr-2" style="float: left">
-                                <span class="far fa-edit"></span></a>
+                            <a asp-action="EditTask" asp-route-id=@task.Id class="btn btn-outline-info btn-sm mr-2" style="float: left">
+                                <span class="far fa-edit"></span>
+                            </a>
                             <form asp-action="DeleteTask" method="post"
-                                  asp-route-id="@ViewBag.Filters.FilterString"
-                                  class="mr-2" style="float: left">
+                                  asp-route-id="@ViewBag.Filters.FilterString" class="mr-2" style="float: left">
                                 <input type="hidden"
                                        name="@nameof(ToDo.Id)" value="@task.Id" />
-                                <button type="submit" class="btn btn-outline-primary btn-sm">                                   
+                                <button type="submit" class="btn btn-outline-info btn-sm">
                                     <span class="far fa-trash-alt"></span>
                                 </button>
                             </form>
