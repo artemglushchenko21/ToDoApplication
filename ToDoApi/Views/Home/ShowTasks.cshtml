@@ -58,7 +58,24 @@
                         <td>@task.Description</td>
                         <td>@task.Category.Name</td>
                         <td class="@overdue">@task.DueDate?.ToShortDateString()</td>
-                        <td class="@overdue text-success">@task.Status.Name</td>
+                        @*<td class="@overdue text-success">@task.Status.Name</td>*@
+                    <td>
+                        <form asp-action="CompleteTask" method="post"
+                              asp-route-id="@ViewBag.Filters.FilterString"
+                              class="mr-2" style="float: left">
+
+                            <select onchange="this.form.submit();" name="statusName" class="form-control"
+                                    asp-items="@(new SelectList(ViewBag.Statuses,"StatusId", "Name", (@task.StatusId)))">
+                            </select>
+
+                            <input type="hidden"
+                                   name="@nameof(ToDo.Id)" value="@task.Id" />
+                            <input type="hidden"
+                                   name="@nameof(ToDo.StatusId)" value="@task.StatusId" />
+
+                        </form>
+                        
+                    </td>
                         <td>
                             <form asp-action="CompleteTask" method="post"
                                   asp-route-id="@ViewBag.Filters.FilterString"
@@ -67,9 +84,9 @@
                                 <input type="hidden"
                                        name="@nameof(ToDo.Id)" value="@task.Id" />
 
-                                <button type="submit" name="@nameof(ToDo.StatusId)" value="closed" class="btn btn-outline-primary btn-sm">
+                                @*<button type="submit" name="@nameof(ToDo.StatusId)" value="closed" class="btn btn-outline-primary btn-sm">
                                     Done
-                                </button>
+                                </button>*@
                             </form>
                             <a asp-action="EditTask" asp-route-id=@task.Id class="btn btn-outline-primary btn-sm mr-2" style="float: left">
                                 <span class="far fa-edit"></span></a>

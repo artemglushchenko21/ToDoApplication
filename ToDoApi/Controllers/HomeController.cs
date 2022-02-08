@@ -109,11 +109,11 @@ namespace ToDoApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult CompleteTask([FromRoute] string id, ToDo selected)
+        public IActionResult CompleteTask(string statusName, [FromRoute] string id, ToDo selected)
         {
-            string newStatusId = selected.StatusId;
+            //string newStatusId = selected.StatusId;
             selected = _context.ToDos.Find(selected.Id);
-            selected.StatusId = newStatusId;
+            selected.StatusId = statusName;
             _context.ToDos.Update(selected);
 
             _context.SaveChanges();
