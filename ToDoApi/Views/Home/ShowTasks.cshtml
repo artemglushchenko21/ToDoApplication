@@ -31,13 +31,13 @@
                     <option value="all">All</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Filter</button>
-            <a asp-action="Index" asp-route-id="" class="btn btn-primary">Clear</a>
+            <button type="submit" class="btn btn-outline-primary">Filter</button>
+            <a asp-action="Index" asp-route-id="" class="btn btn-outline-primary">Clear</a>
         </form>
     </div>
     <div class="col-sm-10">
 
-        <a asp-action="AddTask" class="btn btn-primary mt-2">Add a new item</a>
+        <a asp-action="AddTask" class="btn btn-primary mt-2"><span class="far fa-plus-square"></span>&nbsp;Add a new task</a>
 
         <table class="table table-bordered table-striped mt-2">
             <thead>
@@ -67,18 +67,19 @@
                                 <input type="hidden"
                                        name="@nameof(ToDo.Id)" value="@task.Id" />
 
-                                <button type="submit" name="@nameof(ToDo.StatusId)" value="closed" class="btn btn-primary btn-sm">
+                                <button type="submit" name="@nameof(ToDo.StatusId)" value="closed" class="btn btn-outline-primary btn-sm">
                                     Done
                                 </button>
                             </form>
-                            <a asp-action="EditTask" asp-route-id=@task.Id class="btn btn-primary btn-sm">Edit</a>
+                            <a asp-action="EditTask" asp-route-id=@task.Id class="btn btn-outline-primary btn-sm mr-2" style="float: left">
+                                <span class="far fa-edit"></span></a>
                             <form asp-action="DeleteTask" method="post"
                                   asp-route-id="@ViewBag.Filters.FilterString"
                                   class="mr-2" style="float: left">
                                 <input type="hidden"
                                        name="@nameof(ToDo.Id)" value="@task.Id" />
-                                <button type="submit" class="btn btn-primary btn-sm">
-                                    Delete
+                                <button type="submit" class="btn btn-outline-primary btn-sm">                                   
+                                    <span class="far fa-trash-alt"></span>
                                 </button>
                             </form>
                         </td>
