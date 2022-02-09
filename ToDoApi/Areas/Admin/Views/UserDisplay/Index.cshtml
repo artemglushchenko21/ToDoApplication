@@ -32,66 +32,9 @@
             <a asp-action="EditUser" asp-route-id=@user.Id class="btn btn-outline-info btn-sm mr-2" style="float: left">
                 <span class="far fa-edit"></span>
             </a>
-            @*<form method="post" asp-action="Delete"
-                  asp-route-id="@user.Id">
-                <button type="submit" class="btn btn-outline-info">
-                    <span class="far fa-trash-alt"></span>
-                </button>
-            </form>*@
         </td>
-        @*<td>
-            <form method="post" asp-action="AddToAdmin"
-                  asp-route-id="@user.Id">
-                <button type="submit" class="btn btn-outline-info">
-                    Add To Admin
-                </button>
-            </form>
-        </td>
-        <td>
-            <form method="post" asp-action="RemoveFromAdmin"
-                  asp-route-id="@user.Id">
-                <button type="submit" class="btn btn-outline-info">
-                    Remove From Admin
-                </button>
-            </form>
-        </td>*@
     </tr>
             }
         }
     </tbody>
 </table>
-
-<h2 class="mb-2">Manage Roles</h2>
-
-@if (Model.Roles.Count() == 0)
-{
-    <form method="post" asp-action="CreateAdminRole">
-        <button type="submit" class="btn btn-outline-info">
-            Create Admin Role
-        </button>
-    </form>
-}
-else
-{
-    <table class="table table-bordered table-striped table-sm">
-        <thead>
-            <tr><th>Role</th><th></th></tr>
-        </thead>
-        <tbody>
-            @foreach (var role in Model.Roles)
-            {
-                <tr>
-                    <td>@role.Name</td>
-                    <td>
-                        <form method="post" asp-action="DeleteRole"
-                              asp-route-id="@role.Id">
-                            <button type="submit" class="btn btn-outline-info">
-                                Delete Role
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}

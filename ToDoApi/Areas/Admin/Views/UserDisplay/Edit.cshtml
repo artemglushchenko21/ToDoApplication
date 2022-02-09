@@ -1,5 +1,5 @@
 ﻿@model ApplicationUser
-<h3 class="text-center m-3">Please, edit user credentials</h3>
+<h3 class="text-center m-3">Please edit user credentials</h3>
 
 <table class="table table-bordered table-striped table-sm">
     <thead>
@@ -36,3 +36,24 @@
         </tr>
     </tbody>
 </table>
+
+
+<form method="post" asp-action="DeleteUser" asp-route-id="@Model.Id">
+    <button type="submit" class="btn btn-info mr-3" style="float: left">
+        <span class="far fa-trash-alt"></span>
+        Delete user
+    </button>
+</form>
+<form method="post" asp-action="AddAdminRoleToUser" asp-route-id="@Model.Id">
+    <button type="submit" class="btn btn-info mr-3" style="float: left">
+        <span class="fas fa-screwdriver"></span>&nbsp;
+        Assign as admin
+    </button>
+</form>
+<form method="post" asp-action="RemoveAdminRoleFromUser" asp-route-id="@Model.Id">
+    <button type="submit" class="btn btn-info mr-3" style="float: left">
+        <span class="fas fa-xmark"></span>&nbsp;
+        Revoke admin
+    </button>
+</form>
+

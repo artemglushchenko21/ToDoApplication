@@ -1,5 +1,7 @@
 ﻿@{ var current = ViewContext.RouteData.Values["area"]?.ToString() ??
-                        ViewContext.RouteData.Values["controller"]?.ToString(); }
+                            ViewContext.RouteData.Values["controller"]?.ToString(); }
+@{var action = ViewContext.RouteData.Values["action"]?.ToString();}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,35 +28,44 @@
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     @using Microsoft.AspNet.Identity;
+
                     @if (User.Identity.IsAuthenticated)
                     {
+
+                        string roles = User.FindFirstValue(ClaimTypes.Role);
+                        if (roles != null && roles.Contains("admin"))
+                        {
+                            <li class="nav-item @Nav.Active("Register", action)">
+                                <a class="nav-link" asp-action="Index" asp-controller="UserDisplay" asp-area="Admin">
+                                    <span class="fas fa-hammer"></span>&nbsp;Manage users
+                                </a>
+                            </li>
+                        }
                         <li class="nav-item pl-0">
                             <form method="post" asp-action="LogOut" asp-controller="Account"
                                   asp-area="">
-                                <input type="submit" class="nav-link btn btn-link bg-dark" value="Log Out"/>
+                                <input type="submit" class="nav-link btn btn-link bg-dark" value="Log Out" />
 
                                 @*<span class="icon-input-btn pl-0">
-                                    <i class="fa fa-search pl-0" style="float: left"></i>
-                                    <input type="submit" class="nav-link btn btn-link bg-dark pl-0" value="Search">
-                                </span>*@
+                                        <i class="fa fa-search pl-0" style="float: left"></i>
+                                        <input type="submit" class="nav-link btn btn-link bg-dark pl-0" value="Search">
+                                    </span>*@
 
                                 @*<button type="submit" class="nav-link btn btn-link bg-dark">
-            <i class="fa fa-search"></i> Log Out
-        </button>*@
+                                        <i class="fa fa-search"></i> Log Out
+                                    </button>*@
 
                                 @*<a asp-action="LogOut" asp-controller="Account"
-           asp-area="" class="nav-link">
-            Log Out
-        </a>*@
+                                       asp-area="" class="nav-link">
+                                        Log Out
+                                    </a>*@
                                 @*<span class="text-light">@User.Identity.Name</span>
-        <span class="text-light">@User.Identity.GetUserId()</span>*@
+                                    <span class="text-light">@User.Identity.GetUserId()</span>*@
                             </form>
                         </li>
                     }
                     else
                     {
-                        var action = ViewContext.RouteData.Values["action"]?.ToString();
-
                         <li class="nav-item @Nav.Active("Register", action)">
                             <a asp-action="Register" asp-controller="Account"
                                asp-area="" class="nav-link">
@@ -69,8 +80,6 @@
 
                     @if (User.Identity.IsAuthenticated)
                     {
-                        var action = ViewContext.RouteData.Values["action"]?.ToString();
-
                         <li class="nav-item @Nav.Active("UserProfile", action)">
                             <a class="nav-link" asp-action="UserProfile" asp-controller="Home" asp-area="">
                                 <span class="fas fa-cog"></span>&nbsp;@(User.FindFirstValue(ClaimTypes.Name))
@@ -83,7 +92,7 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">           
+        <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>

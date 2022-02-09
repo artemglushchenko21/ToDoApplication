@@ -42,13 +42,37 @@ namespace ToDoMvc.Areas.Admin.Controllers
             return View(model);
         }
 
-
+        [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {
             HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync("User/" + id);
             var user = response.Content.ReadAsAsync<ApplicationUser>().Result;
 
             return View("Edit", user);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            HttpResponseMessage response = await _apiHelper.ApiClient.DeleteAsync("User/" + id);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddAdminRoleToUser(string id)
+        {
+            HttpResponseMessage response = await _apiHelper.ApiClient.PostAsync($"User/AddAdminRoleToUser/{id}", null);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveAdminRoleFromUser(string id)
+        {
+            HttpResponseMessage response = await _apiHelper.ApiClient.PostAsync($"User/RemoveAdminRoleFromUser/{id}", null);
+
+            return RedirectToAction("Index");
         }
     }
 }

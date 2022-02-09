@@ -15,22 +15,26 @@ using ToDoApi.Models.Data;
 using ToDoApi.Models.ViewModels;
 
 namespace ToDoApi.Controllers
-{
+{   
     [ApiController]
+    [Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
         public UserController(ApplicationDbContext context,
             SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         [Authorize]
@@ -54,7 +58,6 @@ namespace ToDoApi.Controllers
             user.RoleNames = await _userManager.GetRolesAsync(user);
         }
 
-        [Authorize]
         [HttpGet("{id}")]   
         public async Task<ApplicationUser> GetUserById(string id)
         {
@@ -89,6 +92,53 @@ namespace ToDoApi.Controllers
                 }
             }
             return result;
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user != null)
+            {
+                IdentityResult result = await _userManager.DeleteAsync(user);
+                if (!result.Succeeded)
+                {
+                    string errorMessage = "";
+                    foreach (IdentityError error in result.Errors)
+                    {
+                        errorMessage += error.Description + " | ";
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpPost("AddAdminRoleToUser/{id}")]
+        public async Task AddAdminRoleToUser(string id)
+        {
+            IdentityRole adminRole = await _roleManager.FindByNameAsync("admin");
+
+            if (adminRole != null)
+            {
+                var user = await _userManager.FindByIdAsync(id);
+                await _userManager.AddToRoleAsync(user, adminRole.Name);
+            }        
+        }
+
+        [HttpPost("RemoveAdminRoleFromUser/{id}")]
+        public async Task RemoveAdminRoleFromUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            var result = await _userManager.RemoveFromRoleAsync(user, "admin");
         }
     }
 }

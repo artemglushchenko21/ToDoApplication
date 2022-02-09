@@ -100,15 +100,5 @@
                 }
             </tbody>
         </table>
-        @{
-            string roles = User.FindFirstValue(ClaimTypes.Role);
-
-            if (roles !=null && roles.Contains("admin"))
-            {
-                <a class="nav-link" asp-action="Index" asp-controller="UserDisplay" asp-area="Admin">
-                    <span class="fa-solid fa-screwdriver-wrench"></span>&nbsp;ManageUsers
-                </a>
-            }
-        }
     </div>
 </div>
