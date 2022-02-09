@@ -21,18 +21,34 @@ namespace ToDoMvc.Services.Authentication
             _key = key;
         }
 
-        public dynamic GenerateToken(string userName, string email, string userId)
+        public dynamic GenerateToken(string userName, string email, string userId, IQueryable<string> roles)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.ASCII.GetBytes(_key);
+
+            List<Claim> claims = new List<Claim>();
+
+            claims.Add(new Claim(ClaimTypes.Name, userName));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, userId));
+            claims.Add(new Claim(ClaimTypes.Email, email));
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
             var tokenDesriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, userName),
-                    new Claim(ClaimTypes.NameIdentifier, userId),
-                    new Claim(ClaimTypes.Email, email),
-                }),
+                
+                //Subject = new ClaimsIdentity(new Claim[]
+                //{
+                //    new Claim(ClaimTypes.Name, userName),
+                //    new Claim(ClaimTypes.NameIdentifier, userId),
+                //    new Claim(ClaimTypes.Email, email),
+
+
+                //}),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(tokenKey),

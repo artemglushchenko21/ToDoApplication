@@ -1,0 +1,38 @@
+﻿@model ApplicationUser
+<h3 class="text-center m-3">Please, edit user credentials</h3>
+
+<table class="table table-bordered table-striped table-sm">
+    <thead>
+        <tr>
+            <th>User property</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>First name</td>
+            <td>@Model.FirstName</td>
+        </tr>
+        <tr>
+            <td>Last name</td>
+            <td>@Model.LastName</td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td>@Model.Email</td>
+        </tr>
+        <tr>
+            <td>Id</td>
+            <td>@Model.Id</td>
+        </tr>
+        <tr>
+            <td>Roles</td>
+            <td>
+                @foreach (string roleName in Model.RoleNames)
+                {
+                    <div>@roleName</div>
+                }
+            </td>
+        </tr>
+    </tbody>
+</table>

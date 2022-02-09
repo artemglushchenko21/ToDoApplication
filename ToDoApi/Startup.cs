@@ -141,6 +141,11 @@ namespace ToDoApi
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapAreaControllerRoute(
+                   name: "admin",
+                   areaName: "Admin",
+                   pattern: "Admin/{controller=UserDisplay}/{action=Index}/{id?}");
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

@@ -55,7 +55,7 @@ namespace ToDoApi.Controllers
         }
 
         [Authorize]
-        public IActionResult ShowTasks(string id)
+        public async Task<IActionResult> ShowTasks(string id)
         {
             var filters = new Filters(id);
             ViewBag.Filters = filters;
@@ -64,7 +64,7 @@ namespace ToDoApi.Controllers
             ViewBag.DueFilters = Filters.DueFilterValues;
          //  _apiHelper.ApiClient.DefaultRequestHeaders.Add("UserId", User.Identity.GetUserId());
 
-            HttpResponseMessage response = _apiHelper.ApiClient.GetAsync("ToDo?filterId=" + id).Result;
+            HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync("ToDo?filterId=" + id);
 
             IEnumerable<ToDo> tasks = response.Content.ReadAsAsync<IEnumerable<ToDo>>().Result;
             return View(tasks);

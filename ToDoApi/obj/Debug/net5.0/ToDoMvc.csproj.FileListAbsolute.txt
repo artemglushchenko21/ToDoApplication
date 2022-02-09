@@ -180,4 +180,10 @@ C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\ref\ToDoMvc.
 C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\ToDoMvc.pdb
 C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\ToDoMvc.genruntimeconfig.cache
 C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Views\Home\UserProfile.cshtml.g.cs
+C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Areas\Admin\Views\Shared\_AdminLayout.cshtml.g.cs
+C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Areas\Admin\Views\_ViewImports.cshtml.g.cs
+C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Areas\Admin\Views\_ViewStart.cshtml.g.cs
 C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\ToDoMvc.csproj.AssemblyReference.cache
+C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Areas\Admin\Views\UserDisplay\Index.cshtml.g.cs
+C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Areas\Admin\Views\UserDisplay\User.cshtml.g.cs
+C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Areas\Admin\Views\UserDisplay\Edit.cshtml.g.cs
