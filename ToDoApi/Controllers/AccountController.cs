@@ -12,7 +12,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Models.Data;
-using ToDoApi.Models.DomainModels;
 using ToDoApi.Models.ViewModels;
 using ToDoMvc;
 using ToDoMvc.Models;
@@ -22,11 +21,11 @@ namespace ToDoApi.Controllers
 {
     public class AccountController : Controller
     {
-        private SignInManager<UserModel> _signInManager;
+        private SignInManager<ApplicationUser> _signInManager;
         private ApplicationDbContext _context;
         private readonly IApiHelper _apiHelper;
 
-        public AccountController(SignInManager<UserModel> signInManager,
+        public AccountController(SignInManager<ApplicationUser> signInManager,
                                  ApplicationDbContext applicationDbContext,
                                  IApiHelper apiHelper)
         {
@@ -52,7 +51,7 @@ namespace ToDoApi.Controllers
         {
             if (ModelState.IsValid)
             {
-                var loginData = new LoginData { Username = model.Username, Password = model.Password };
+                var loginData = new LoginViewModel { Email = model.Email, Password = model.Password };
 
                 using (HttpResponseMessage response = await _apiHelper.ApiClient.PostAsJsonAsync("Token/authenticate", loginData))
                 {

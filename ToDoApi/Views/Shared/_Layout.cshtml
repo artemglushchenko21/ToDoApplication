@@ -28,14 +28,19 @@
                     @using Microsoft.AspNet.Identity;
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li class="nav-item">
+                        <li class="nav-item pl-0">
                             <form method="post" asp-action="LogOut" asp-controller="Account"
                                   asp-area="">
                                 <input type="submit" class="nav-link btn btn-link bg-dark" value="Log Out"/>
 
+                                @*<span class="icon-input-btn pl-0">
+                                    <i class="fa fa-search pl-0" style="float: left"></i>
+                                    <input type="submit" class="nav-link btn btn-link bg-dark pl-0" value="Search">
+                                </span>*@
+
                                 @*<button type="submit" class="nav-link btn btn-link bg-dark">
-                                    <i class="fa fa-search"></i> Log Out
-                                </button>*@
+            <i class="fa fa-search"></i> Log Out
+        </button>*@
 
                                 @*<a asp-action="LogOut" asp-controller="Account"
            asp-area="" class="nav-link">
@@ -68,7 +73,7 @@
 
                         <li class="nav-item @Nav.Active("UserProfile", action)">
                             <a class="nav-link" asp-action="UserProfile" asp-controller="Home" asp-area="">
-                                <span class="fas fa-cog"></span>&nbsp;@(User.Identity.Name)
+                                <span class="fas fa-cog"></span>&nbsp;@(User.FindFirstValue(ClaimTypes.Name))
                             </a>
                         </li>
                     }

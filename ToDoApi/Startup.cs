@@ -18,7 +18,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Models.Data;
-using ToDoApi.Models.DomainModels;
 using ToDoMvc.Models;
 using ToDoMvc.Models.Helpers;
 using ToDoMvc.Services.Authentication;
@@ -53,7 +52,7 @@ namespace ToDoApi
             services.AddDbContext<ApplicationDbContext>(options =>
              options.UseSqlite(Configuration.GetConnectionString("ToDoDB")));
 
-            services.AddIdentity<UserModel, IdentityRole>(options =>
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.Password.RequiredLength = 6;
                 options.Password.RequireNonAlphanumeric = false;
@@ -78,7 +77,7 @@ namespace ToDoApi
                 };
             });
 
-            services.AddSingleton<IJwtAuthenticationManager>(new JwtAuthenticationManager(key));
+           services.AddSingleton<IJwtAuthenticationManager>(new JwtAuthenticationManager(key));
 
             services.AddSingleton<IApiHelper, ApiHelper>();
 
@@ -146,6 +145,9 @@ namespace ToDoApi
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //this has been used for admin user creation
+            //ApplicationDbContext.CreateAdminUser(app.ApplicationServices, Configuration).Wait();
         }
     }
 }

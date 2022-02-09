@@ -8,9 +8,9 @@ namespace ToDoApi.Models.ViewModels
 {
     public class LoginViewModel
     {
-        [Required(ErrorMessage = "Please enter a username")]
-        [StringLength(255)]
-        public string Username { get; set; }
+        [Required(ErrorMessage = "Please enter an email")]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
 
         [Required(ErrorMessage = "Please enter a password")]
         [StringLength(255)]

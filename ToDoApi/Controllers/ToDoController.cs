@@ -21,10 +21,10 @@ namespace ToDoWebApi.Controllers
     public class ToDoController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly SignInManager<UserModel> _signInManager;
-        private readonly Microsoft.AspNetCore.Identity.UserManager<UserModel> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> _userManager;
 
-        public ToDoController(ApplicationDbContext context, SignInManager<UserModel> signInManager, Microsoft.AspNetCore.Identity.UserManager<UserModel> userManager, IHttpContextAccessor httpContextAccessor)
+        public ToDoController(ApplicationDbContext context, SignInManager<ApplicationUser> signInManager, Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _signInManager = signInManager;
@@ -36,9 +36,9 @@ namespace ToDoWebApi.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<ToDo>>> GetToDos(string filterId)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            IQueryable<ToDo> query = _context.ToDos.Include(t => t.Category).Include(t => t.Status).Where(t => t.UserId == user.Id);
+            IQueryable<ToDo> query = _context.ToDos.Include(t => t.Category).Include(t => t.Status).Where(t => t.UserId == userId);
 
             var filters = new Filters(filterId);
 
@@ -84,8 +84,8 @@ namespace ToDoWebApi.Controllers
         [Authorize]
         public async Task<IActionResult> PutToDo(int id, ToDo toDo)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            toDo.UserId = user.Id;
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            toDo.UserId = userId;
 
             if (id != toDo.Id)
             {
@@ -117,9 +117,9 @@ namespace ToDoWebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<ToDo>> PostToDo(ToDo toDo)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            toDo.UserId = user.Id;
+            toDo.UserId = userId;
 
             _context.ToDos.Add(toDo);
             await _context.SaveChangesAsync();

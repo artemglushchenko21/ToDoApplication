@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Models.Data;
@@ -23,12 +24,17 @@ namespace ToDoApi.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
         private readonly IApiHelper _apiHelper;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext applicationDbContext, IApiHelper apiHelper)
+        public HomeController(ILogger<HomeController> logger, 
+            ApplicationDbContext applicationDbContext, 
+            IApiHelper apiHelper,
+            UserManager<ApplicationUser> userManager)
         {
             _context = applicationDbContext;
             _apiHelper = apiHelper;
             _logger = logger;
+            _userManager = userManager;
         }
 
         public IActionResult Privacy()
@@ -146,10 +152,10 @@ namespace ToDoApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult UserProfile()
+        public async Task<IActionResult> UserProfile()
         {
-            UserModel user = new();
-            user.UserName = User.Identity.Name;
+            string email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
 
             return View("UserProfile", user);
         }

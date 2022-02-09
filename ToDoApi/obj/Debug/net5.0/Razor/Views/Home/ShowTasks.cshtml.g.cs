@@ -35,20 +35,20 @@ using ToDoApi.Models.ToDoTaskElements;
 #nullable disable
 #nullable restore
 #line 4 "C:\Users\user\source\repos\ToDoApplication\ToDoApi\Views\_ViewImports.cshtml"
-using ToDoApi.Models.DomainModels;
+using ToDoApi.Models.ViewModels;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 5 "C:\Users\user\source\repos\ToDoApplication\ToDoApi\Views\_ViewImports.cshtml"
-using ToDoApi.Models.ViewModels;
+using System.Security.Claims;
 
 #line default
 #line hidden
 #nullable disable
     [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc", @"/Views/Home/ShowTasks.cshtml")]
-    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"a2e9cba153c2b6019c8a22e8cc2f61dc23d96e14", @"/Views/_ViewImports.cshtml")]
+    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"bc3f56d126cec439a909ed156e0240a2308ddb88", @"/Views/_ViewImports.cshtml")]
     public class Views_Home_ShowTasks : global::Microsoft.AspNetCore.Mvc.Razor.RazorPage<IEnumerable<ToDo>>
     {
         private static readonly global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute __tagHelperAttribute_0 = new global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute("asp-action", "AddTask", global::Microsoft.AspNetCore.Razor.TagHelpers.HtmlAttributeValueStyle.DoubleQuotes);
@@ -107,7 +107,7 @@ using ToDoApi.Models.ViewModels;
 #line hidden
 #nullable disable
             WriteLiteral("\r\n<div class=\"row mt-4\">\r\n    <div class=\"col-sm-2\">\r\n        ");
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc10358", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc10353", async() => {
                 WriteLiteral("\r\n            <span class=\"fas fa-plus-circle\"></span>&nbsp;Add task\r\n        ");
             }
             );
@@ -124,11 +124,11 @@ using ToDoApi.Models.ViewModels;
             Write(__tagHelperExecutionContext.Output);
             __tagHelperExecutionContext = __tagHelperScopeManager.End();
             WriteLiteral("\r\n        ");
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc11683", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc11678", async() => {
                 WriteLiteral("\r\n            <div class=\"form-group\">\r\n                <label>Category:</label>\r\n                ");
-                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("select", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc12044", async() => {
+                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("select", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc12039", async() => {
                     WriteLiteral("\r\n                    ");
-                    __tagHelperExecutionContext = __tagHelperScopeManager.Begin("option", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc12333", async() => {
+                    __tagHelperExecutionContext = __tagHelperScopeManager.Begin("option", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc12328", async() => {
                         WriteLiteral("All");
                     }
                     );
@@ -168,9 +168,9 @@ __Microsoft_AspNetCore_Mvc_TagHelpers_SelectTagHelper.Items = (new SelectList(Vi
                 Write(__tagHelperExecutionContext.Output);
                 __tagHelperExecutionContext = __tagHelperScopeManager.End();
                 WriteLiteral("\r\n            </div>\r\n            <div class=\"form-group\">\r\n                <label>Due:</label>\r\n                ");
-                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("select", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc15350", async() => {
+                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("select", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc15345", async() => {
                     WriteLiteral("\r\n                    ");
-                    __tagHelperExecutionContext = __tagHelperScopeManager.Begin("option", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc15639", async() => {
+                    __tagHelperExecutionContext = __tagHelperScopeManager.Begin("option", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc15634", async() => {
                         WriteLiteral("All");
                     }
                     );
@@ -210,9 +210,9 @@ __Microsoft_AspNetCore_Mvc_TagHelpers_SelectTagHelper.Items = (new SelectList(Vi
                 Write(__tagHelperExecutionContext.Output);
                 __tagHelperExecutionContext = __tagHelperScopeManager.End();
                 WriteLiteral("\r\n            </div>\r\n            <div class=\"form-group\">\r\n                <label>Status:</label>\r\n                ");
-                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("select", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc18646", async() => {
+                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("select", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc18641", async() => {
                     WriteLiteral("\r\n                    ");
-                    __tagHelperExecutionContext = __tagHelperScopeManager.Begin("option", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc18935", async() => {
+                    __tagHelperExecutionContext = __tagHelperScopeManager.Begin("option", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc18930", async() => {
                         WriteLiteral("All");
                     }
                     );
@@ -252,7 +252,7 @@ __Microsoft_AspNetCore_Mvc_TagHelpers_SelectTagHelper.Items = (new SelectList(Vi
                 Write(__tagHelperExecutionContext.Output);
                 __tagHelperExecutionContext = __tagHelperScopeManager.End();
                 WriteLiteral("\r\n            </div>\r\n            <button type=\"submit\" class=\"btn btn-outline-info\">Filter</button>\r\n            ");
-                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc21947", async() => {
+                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc21942", async() => {
                     WriteLiteral("Clear");
                 }
                 );
@@ -359,9 +359,9 @@ WriteAttributeValue("", 2589, overdue, 2589, 8, false);
 #nullable disable
             WriteLiteral("</td>\r\n");
             WriteLiteral("                        <td>\r\n                            ");
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc27574", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc27569", async() => {
                 WriteLiteral("\r\n\r\n                                ");
-                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("select", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc27869", async() => {
+                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("select", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc27864", async() => {
                     WriteLiteral("\r\n                                ");
                 }
                 );
@@ -460,7 +460,7 @@ WriteAttributeValue("", 3533, task.StatusId, 3533, 14, false);
             Write(__tagHelperExecutionContext.Output);
             __tagHelperExecutionContext = __tagHelperScopeManager.End();
             WriteLiteral("\r\n\r\n                        </td>\r\n                        <td class=\"justify-content-center\">\r\n                            ");
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc34180", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc34175", async() => {
                 WriteLiteral("\r\n\r\n                                <input type=\"hidden\"");
                 BeginWriteAttribute("name", "\r\n                                       name=\"", 3964, "\"", 4027, 1);
 #nullable restore
@@ -516,7 +516,7 @@ WriteAttributeValue("", 4036, task.Id, 4036, 8, false);
             Write(__tagHelperExecutionContext.Output);
             __tagHelperExecutionContext = __tagHelperScopeManager.End();
             WriteLiteral("\r\n                            ");
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc37862", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc37857", async() => {
                 WriteLiteral("\r\n                                <span class=\"far fa-edit\"></span>\r\n                            ");
             }
             );
@@ -549,7 +549,7 @@ WriteAttributeValue("", 4036, task.Id, 4036, 8, false);
             Write(__tagHelperExecutionContext.Output);
             __tagHelperExecutionContext = __tagHelperScopeManager.End();
             WriteLiteral("\r\n                            ");
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc40321", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "eaa0ca023628f25b05d16bdfca2a7f5a0b5e29cc40316", async() => {
                 WriteLiteral("\r\n                                <input type=\"hidden\"");
                 BeginWriteAttribute("name", "\r\n                                       name=\"", 4565, "\"", 4628, 1);
 #nullable restore

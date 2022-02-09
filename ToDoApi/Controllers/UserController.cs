@@ -14,7 +14,6 @@ using ToDoApi.Models;
 using ToDoApi.Models.Data;
 using ToDoApi.Models.ViewModels;
 
-
 namespace ToDoApi.Controllers
 {
     [ApiController]
@@ -22,49 +21,51 @@ namespace ToDoApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<UserModel> _userManager;
-        private readonly SignInManager<UserModel> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public UserController(ApplicationDbContext context,
-            SignInManager<UserModel> signInManager,
-            UserManager<UserModel> userManager)
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
         }
 
-        [HttpGet]
-        public IEnumerable<UserModel> GetAllUsers()
+        [Authorize]
+        [HttpGet]   
+        public IEnumerable<ApplicationUser> GetAllUsers()
         {
             var userList = _context.Users.ToList();
             return userList;
         }
 
-        [HttpGet]
+        [Authorize]
+        [HttpGet]   
         [Route("/GetUserById")]
-        public async Task<UserModel> GetUserById(string id)
+        public async Task<ApplicationUser> GetUserById(string id)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             return await _userManager.FindByIdAsync(userId);
-
-            //var user = await _userManager.FindByIdAsync(id);
-            //return user;
         }
 
         [HttpPost]
         public async Task<IdentityResult> AddAUser(RegisterViewModel model)
         {
-            var user = new UserModel
+            var user = new ApplicationUser
             {
-                UserName = model.Username
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                UserName = $"{ model.FirstName }{ model.LastName }" 
             };
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
             {
-                bool isPersistant = true;
+                bool isPersistant = false;
                 await _signInManager.SignInAsync(user, isPersistant);
             }
             else

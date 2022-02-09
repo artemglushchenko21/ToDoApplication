@@ -21,6 +21,11 @@ namespace ToDoApi
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+
+                    //this has been used for admin user creation
+
+                    //.UseDefaultServiceProvider(
+                    //     options => options.ValidateScopes = false);
                 });
     }
 }

@@ -35,20 +35,20 @@ using ToDoApi.Models.ToDoTaskElements;
 #nullable disable
 #nullable restore
 #line 4 "C:\Users\user\source\repos\ToDoApplication\ToDoApi\Views\_ViewImports.cshtml"
-using ToDoApi.Models.DomainModels;
+using ToDoApi.Models.ViewModels;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 5 "C:\Users\user\source\repos\ToDoApplication\ToDoApi\Views\_ViewImports.cshtml"
-using ToDoApi.Models.ViewModels;
+using System.Security.Claims;
 
 #line default
 #line hidden
 #nullable disable
     [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"7091c65830b0329e613be026ede8a57552863778", @"/Views/_ViewStart.cshtml")]
-    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"a2e9cba153c2b6019c8a22e8cc2f61dc23d96e14", @"/Views/_ViewImports.cshtml")]
+    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"bc3f56d126cec439a909ed156e0240a2308ddb88", @"/Views/_ViewImports.cshtml")]
     public class Views__ViewStart : global::Microsoft.AspNetCore.Mvc.Razor.RazorPage<dynamic>
     {
         #pragma warning disable 1998

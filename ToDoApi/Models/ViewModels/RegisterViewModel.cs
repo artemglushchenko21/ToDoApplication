@@ -9,9 +9,18 @@ namespace ToDoApi.Models.ViewModels
     public class RegisterViewModel
     {
         [Required(ErrorMessage = "Please enter a username.")]
-        [RegularExpression("(?i)^[a-z0-9 ]+$", ErrorMessage = "Username may not contain special characters.")]
+        [RegularExpression("(?i)^[a-z0-9 ]+$", ErrorMessage = "First name may not contain special characters.")]
         [StringLength(255)]
-        public string Username { get; set; }
+        public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "Please enter a username.")]
+        [RegularExpression("(?i)^[a-z0-9 ]+$", ErrorMessage = "Last name may not contain special characters.")]
+        [StringLength(255)]
+        public string LastName { get; set; }
+
+        [Required(ErrorMessage = "Please enter an email")]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
 
         [Required(ErrorMessage = "Please enter a password.")]
         [DataType(DataType.Password)]

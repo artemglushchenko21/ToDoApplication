@@ -7,6 +7,6 @@ namespace ToDoMvc.Services.Authentication
 {
     public interface IJwtAuthenticationManager
     {
-        dynamic GenerateToken(string userName, string password);
+        dynamic GenerateToken(string userName, string email, string userId);
     }
 }

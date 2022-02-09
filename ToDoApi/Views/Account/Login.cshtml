@@ -3,40 +3,40 @@
     ViewBag.Title = "Login";
 }
 
-<h2>Login</h2>
-
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-<form method="post" asp-action="LogIn" asp-route-returnUrl="@Model.ReturnUrl">
-    <div class="form-group row">
-        <div class="col-sm-2"><label>Username:</label></div>
-        <div class="col-sm-4">
-            <input type="text" asp-for="Username"
-                   class="form-control" />
+<div class="mt-5">
+    <form method="post" asp-action="LogIn" asp-route-returnUrl="@Model.ReturnUrl">
+        <div class="form-group row">
+            <div class="col-sm-2"><label>Email:</label></div>
+            <div class="col-sm-4">
+                <input type="text" asp-for="Email"
+                       class="form-control" />
+            </div>
+            <div class="col">
+                <span asp-validation-for="Email"
+                      class="text-danger"></span>
+            </div>
         </div>
-        <div class="col">
-            <span asp-validation-for="Username"
-                  class="text-danger"></span>
+        <div class="form-group row">
+            <div class="col-sm-2"><label>Password:</label></div>
+            <div class="col-sm-4">
+                <input type="password" asp-for="Password"
+                       class="form-control" />
+            </div>
+            <div class="col">
+                <span asp-validation-for="Password"
+                      class="text-danger"></span>
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        <div class="col-sm-2"><label>Password:</label></div>
-        <div class="col-sm-4">
-            <input type="password" asp-for="Password"
-                   class="form-control" />
+        <div class="row">
+            <div class="offset-2 col-sm-4">
+                <button type="submit" class="btn btn-info w-100">LOGIN</button>
+            </div>
         </div>
-        <div class="col">
-            <span asp-validation-for="Password"
-                  class="text-danger"></span>
+        <div class="row mt-3">
+            <div class="offset-2 col-sm-4">
+                Not registered? <a asp-action="Register">Register as a new user</a>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="offset-2 col-sm-4">
-            <button type="submit" class="btn btn-info">Log In</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="offset-2 col-sm-4">
-            Not registered? <a asp-action="Register">Register as a new user</a>
-        </div>
-    </div>
-</form>
+    </form>
+</div>

@@ -21,7 +21,7 @@ namespace ToDoMvc.Services.Authentication
             _key = key;
         }
 
-        public dynamic GenerateToken(string userName, string password)
+        public dynamic GenerateToken(string userName, string email, string userId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.ASCII.GetBytes(_key);
@@ -29,7 +29,9 @@ namespace ToDoMvc.Services.Authentication
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, userName)
+                    new Claim(ClaimTypes.Name, userName),
+                    new Claim(ClaimTypes.NameIdentifier, userId),
+                    new Claim(ClaimTypes.Email, email),
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(
