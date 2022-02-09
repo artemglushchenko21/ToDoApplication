@@ -36,7 +36,7 @@
                         if (roles != null && roles.Contains("admin"))
                         {
                             <li class="nav-item @Nav.Active("Register", action)">
-                                <a class="nav-link" asp-action="Index" asp-controller="UserDisplay" asp-area="Admin">
+                                <a class="nav-link" asp-action="Index" asp-controller="UserView" asp-area="Admin">
                                     <span class="fas fa-hammer"></span>&nbsp;Manage users
                                 </a>
                             </li>
@@ -44,7 +44,7 @@
                         <li class="nav-item pl-0">
                             <form method="post" asp-action="LogOut" asp-controller="Account"
                                   asp-area="">
-                                <input type="submit" class="nav-link btn btn-link bg-dark" value="Log Out" />
+                                <input type="submit" class="nav-link btn btn-link bg-dark" value="Sign Out" />
 
                                 @*<span class="icon-input-btn pl-0">
                                         <i class="fa fa-search pl-0" style="float: left"></i>
@@ -74,7 +74,7 @@
                         </li>
                         <li class="nav-item  @Nav.Active("LogIn", action)">
                             <a asp-action="Login" asp-controller="Account"
-                               asp-area="" class="nav-link">Log In</a>
+                               asp-area="" class="nav-link">Sign In</a>
                         </li>
                     }
 

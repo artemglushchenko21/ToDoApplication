@@ -3,8 +3,9 @@
     ViewBag.Title = "Login";
 }
 
-<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
 <div class="mt-5">
+    <div asp-validation-summary="ModelOnly" class="offset-2 text-danger"></div>
     <form method="post" asp-action="LogIn" asp-route-returnUrl="@Model.ReturnUrl">
         <div class="form-group row">
             <div class="col-sm-2"><label>Email:</label></div>
@@ -30,7 +31,7 @@
         </div>
         <div class="row">
             <div class="offset-2 col-sm-4">
-                <button type="submit" class="btn btn-info w-100">LOGIN</button>
+                <button type="submit" class="btn btn-info w-100">Sign In</button>
             </div>
         </div>
         <div class="row mt-3">

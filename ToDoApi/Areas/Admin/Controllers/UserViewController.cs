@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoMvc.Areas.Admin.Models;
+using ToDoMvc.Models;
 using ToDoMvc.Models.Helpers;
 
 namespace ToDoMvc.Areas.Admin.Controllers
@@ -15,13 +16,13 @@ namespace ToDoMvc.Areas.Admin.Controllers
     [Authorize(Roles = "admin")]
     [Area("Admin")]
 
-    public class UserDisplayController : Controller
+    public class UserViewController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IApiHelper _apiHelper;
 
-        public UserDisplayController(UserManager<ApplicationUser> userManager, 
+        public UserViewController(UserManager<ApplicationUser> userManager, 
                         RoleManager<IdentityRole> roleManager,
                         IApiHelper apiHelper)
         {
@@ -29,6 +30,8 @@ namespace ToDoMvc.Areas.Admin.Controllers
             _roleManager = roleManager;
             _apiHelper = apiHelper;
         }
+
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             HttpResponseMessage response =  await _apiHelper.ApiClient.GetAsync("User/");

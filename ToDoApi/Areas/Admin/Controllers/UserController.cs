@@ -19,6 +19,7 @@ namespace ToDoApi.Controllers
     [ApiController]
     [Authorize(Roles = "admin")]
     [Route("api/[controller]")]
+
     public class UserController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -37,7 +38,6 @@ namespace ToDoApi.Controllers
             _roleManager = roleManager;
         }
 
-        [Authorize]
         [HttpGet]   
         public async Task<IEnumerable<ApplicationUser>> GetAllUsers()
         {

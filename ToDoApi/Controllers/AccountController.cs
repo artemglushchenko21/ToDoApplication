@@ -53,33 +53,27 @@ namespace ToDoApi.Controllers
             {
                 var loginData = new LoginViewModel { Email = model.Email, Password = model.Password };
 
-                using (HttpResponseMessage response = await _apiHelper.ApiClient.PostAsJsonAsync("Token/authenticate", loginData))
+                HttpResponseMessage response = await _apiHelper.ApiClient.PostAsJsonAsync("Token/authenticate", loginData);
+                if (response.IsSuccessStatusCode)
                 {
-                    if (response.IsSuccessStatusCode)
+                    var token = await response.Content.ReadAsAsync<AuthenticatedUser>();
+                    GetLoggedInUserInfo(token.Access_Token);
+
+                    HttpContext.Session.SetString("JWToken", token.Access_Token);
+
+                    if (!string.IsNullOrEmpty(model.ReturnUrl) &&
+                        Url.IsLocalUrl(model.ReturnUrl))
                     {
-                        var token = await response.Content.ReadAsAsync<AuthenticatedUser>();
-                        GetLoggedInUserInfo(token.Access_Token);
-
-                        HttpContext.Session.SetString("JWToken", token.Access_Token);
-
-                        if (!string.IsNullOrEmpty(model.ReturnUrl) &&
-                            Url.IsLocalUrl(model.ReturnUrl))
-                        {
-                            return Redirect(model.ReturnUrl);
-                        }
-                        else
-                        {
-                            return RedirectToAction("ShowTasks", "Home");
-                        }
+                        return Redirect(model.ReturnUrl);
                     }
                     else
                     {
-                        throw new Exception(response.ReasonPhrase);
+                        return RedirectToAction("ShowTasks", "Home");
                     }
                 }
             }
 
-            ModelState.AddModelError("", "Invalid username/password.");
+            ModelState.AddModelError("", "Invalid email or password.");
             return View(model);
         }
 
@@ -89,28 +83,6 @@ namespace ToDoApi.Controllers
             _apiHelper.ApiClient.DefaultRequestHeaders.Accept.Clear();
             _apiHelper.ApiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _apiHelper.ApiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer { token }");
-
-            //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            //return _userData.GetUserById(userId).First();
-
-            //using (HttpResponseMessage response = await GlobalVariables.WebApiClient.GetAsync("/api/User"))
-            //{
-            //    if (response.IsSuccessStatusCode)
-            //    {
-            //        var result = await response.Content.ReadAsAsync<LoggedInUserModel>();
-            //        _loggedInUser.CreatedDate = result.CreatedDate;
-            //        _loggedInUser.EmailAddress = result.EmailAddress;
-            //        _loggedInUser.FirstName = result.FirstName;
-            //        _loggedInUser.Id = result.Id;
-            //        _loggedInUser.LastName = result.LastName;
-            //        _loggedInUser.Token = token;
-            //    }
-            //    else
-            //    {
-            //        throw new Exception(response.ReasonPhrase);
-            //    }
-            //}
         }
 
         [HttpPost]

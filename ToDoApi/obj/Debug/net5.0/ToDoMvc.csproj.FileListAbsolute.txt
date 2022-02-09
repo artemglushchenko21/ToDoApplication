@@ -184,6 +184,6 @@ C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Areas\
 C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Areas\Admin\Views\_ViewImports.cshtml.g.cs
 C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Areas\Admin\Views\_ViewStart.cshtml.g.cs
 C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\ToDoMvc.csproj.AssemblyReference.cache
-C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Areas\Admin\Views\UserDisplay\Index.cshtml.g.cs
-C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Areas\Admin\Views\UserDisplay\User.cshtml.g.cs
-C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Areas\Admin\Views\UserDisplay\Edit.cshtml.g.cs
+C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Areas\Admin\Views\UserView\Edit.cshtml.g.cs
+C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Areas\Admin\Views\UserView\Index.cshtml.g.cs
+C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\Razor\Areas\Admin\Views\UserView\User.cshtml.g.cs
