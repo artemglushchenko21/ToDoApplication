@@ -14,6 +14,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Models.Data;
+using ToDoApi.Models.ToDoTaskElements;
 using ToDoApi.Models.ViewModels;
 using ToDoMvc;
 using ToDoMvc.Models;
@@ -77,7 +78,7 @@ namespace ToDoApi.Controllers
             return View(model);
         }
 
-        public void SetLoggedInUserInfo(string token)
+        private void SetLoggedInUserInfo(string token)
         {
             _apiHelper.ApiClient.DefaultRequestHeaders.Clear();
             _apiHelper.ApiClient.DefaultRequestHeaders.Accept.Clear();
@@ -124,10 +125,25 @@ namespace ToDoApi.Controllers
                     var authenticatedUser = await response.Content.ReadAsAsync<AuthenticatedUser>();
                     SetLoggedInUserInfo(authenticatedUser.Access_Token);
 
+                    await CreateFirstDefaultTask();
+
                     return RedirectToAction("ShowTasks", "Home");
                 }
             }
             return View(model);
+        }
+
+        private async Task CreateFirstDefaultTask()
+        {
+            var task = new ToDo
+            {
+                Description = "My first task",
+                CategoryId = "home",
+                DueDate = DateTime.Now,
+                StatusId = "open"
+            };
+
+            await _apiHelper.ApiClient.PostAsJsonAsync("ToDo", task);
         }
     }
 }

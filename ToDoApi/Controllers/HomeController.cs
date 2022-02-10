@@ -66,7 +66,7 @@ namespace ToDoApi.Controllers
             ViewBag.Statuses = _context.Statuses.ToList();
             ViewBag.DueFilters = Filters.DueFilterValues;
 
-            HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync("ToDo?filterId=" + id);
+            HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync($"ToDo?filterId={id}");
 
             var tasks = await response.Content.ReadAsAsync<IEnumerable<ToDo>>();
 
@@ -94,7 +94,7 @@ namespace ToDoApi.Controllers
                 }
                 else
                 {
-                    var result = await _apiHelper.ApiClient.PutAsJsonAsync("ToDo/" + taskId.ToString(), task);
+                    var result = await _apiHelper.ApiClient.PutAsJsonAsync($"ToDo/{taskId}", task);
                 }               
                 return RedirectToAction(nameof(ShowTasks));
             }
@@ -102,6 +102,7 @@ namespace ToDoApi.Controllers
             {
                 ViewBag.Categories = _context.Categories.ToList();
                 ViewBag.Statuses = _context.Statuses.ToList();
+
                 return View(task);
             }
         }
@@ -116,11 +117,10 @@ namespace ToDoApi.Controllers
         [HttpPost]
         public IActionResult CompleteTask(string statusName, [FromRoute] string id, ToDo selected)
         {
-            //string newStatusId = selected.StatusId;
             selected = _context.ToDos.Find(selected.Id);
             selected.StatusId = statusName;
-            _context.ToDos.Update(selected);
 
+            _context.ToDos.Update(selected);
             _context.SaveChanges();
 
             return RedirectToAction(nameof(ShowTasks), new { ID = id });
@@ -131,7 +131,7 @@ namespace ToDoApi.Controllers
         {
             string taskId = selected.Id.ToString();
 
-            HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync("ToDo/" + taskId);
+            HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync($"ToDo/{taskId}");
 
             //    return RedirectToAction(nameof(AddTask), new { ID = id });
             var result = await response.Content.ReadAsAsync<ToDo>();
@@ -149,7 +149,7 @@ namespace ToDoApi.Controllers
         {
             string taskId = selected.Id.ToString();
 
-            HttpResponseMessage response = _apiHelper.ApiClient.DeleteAsync("ToDo/" + taskId).Result;
+            HttpResponseMessage response = _apiHelper.ApiClient.DeleteAsync($"ToDo/{taskId}").Result;
 
             return RedirectToAction(nameof(ShowTasks));
         }

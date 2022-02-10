@@ -54,8 +54,15 @@ using ToDoMvc.Areas.Admin.Models;
 #line default
 #line hidden
 #nullable disable
+#nullable restore
+#line 7 "C:\Users\user\source\repos\ToDoApplication\ToDoApi\Areas\Admin\Views\_ViewImports.cshtml"
+using ToDoMvc.Extensions.ClaimsPrincipalExtensions;
+
+#line default
+#line hidden
+#nullable disable
     [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"2b9678047df9f605cf9530f4e919bf86945f7bf6", @"/Areas/Admin/Views/UserView/User.cshtml")]
-    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"a632659ac7abdcc8f3468f2cab5553ed9de007fa", @"/Areas/Admin/Views/_ViewImports.cshtml")]
+    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"dbb85e64a27241929d5a801221251b74891aff35", @"/Areas/Admin/Views/_ViewImports.cshtml")]
     public class Areas_Admin_Views_UserView_User : global::Microsoft.AspNetCore.Mvc.Razor.RazorPage<dynamic>
     {
         #pragma warning disable 1998

@@ -78,36 +78,38 @@ body {
     position: relative;
 }
 
-.icon-input-btn input[type="submit"] {
-   padding-left: 2em;
-}
+    .icon-input-btn input[type="submit"] {
+        padding-left: 2em;
+    }
 
-.icon-input-btn .fa {
-   display: inline-block;
-   position: absolute;
-   left: 0.65em;
-   top: 30%;
-}
+    .icon-input-btn .fa {
+        display: inline-block;
+        position: absolute;
+        left: 0.65em;
+        top: 30%;
+    }
 
 .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
     background-color: #8064A2 !important;
 }
 
-
+h1, h2, h3 {
+    color: #4e4f4f;
+}
 table {
     border-collapse: collapse;
     border-radius: 6px;
-    border-color: #646669;
 }
 
 thead {
-    background-color: #646669;
+    background-color: #a2aab8;
     border-collapse: collapse;
 }
 
 th {
-    color: #c4c8cc;
-    background: #646669;
+    color: white;
+    background: #a2aab8;
     border: 1px #646669;
-    border-collapse:collapse;
+    border-collapse: collapse;
+    font-weight: 300;
 }

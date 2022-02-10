@@ -37,23 +37,37 @@
     </tbody>
 </table>
 
-
 <form method="post" asp-action="DeleteUser" asp-route-id="@Model.Id">
     <button type="submit" class="btn btn-info mr-3" style="float: left">
         <span class="far fa-trash-alt"></span>
         Delete user
     </button>
 </form>
-<form method="post" asp-action="AddAdminRoleToUser" asp-route-id="@Model.Id">
-    <button type="submit" class="btn btn-info mr-3" style="float: left">
-        <span class="fas fa-screwdriver"></span>&nbsp;
-        Assign as admin
-    </button>
-</form>
-<form method="post" asp-action="RemoveAdminRoleFromUser" asp-route-id="@Model.Id">
-    <button type="submit" class="btn btn-info mr-3" style="float: left">
-        <span class="fas fa-xmark"></span>&nbsp;
-        Revoke admin
-    </button>
-</form>
+
+@{
+    var selectedUserHasAdminRole = Model.RoleNames.Contains("admin");
+
+    if (selectedUserHasAdminRole)
+    {
+        <form method="post" asp-action="RemoveAdminRoleFromUser" asp-route-id="@Model.Id">
+            <button type="submit" class="btn btn-info mr-3" style="float: left">
+                <span class="fas fa-xmark"></span>&nbsp;
+                Revoke admin
+            </button>
+        </form>
+    }
+    else
+    {
+        <form method="post" asp-action="AddAdminRoleToUser" asp-route-id="@Model.Id">
+            <button type="submit" class="btn btn-info mr-3" style="float: left">
+                <span class="fas fa-screwdriver"></span>&nbsp;
+                Assign as admin
+            </button>
+        </form>
+    }
+}
+
+<a asp-action="Index" class="btn btn-info">Cancel</a>
+
+
 
