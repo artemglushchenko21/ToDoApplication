@@ -1,6 +1,6 @@
 ﻿@model ToDoTask
 @{ 
-    bool newTaskMode = (Model == null);
+    bool newTaskMode = (Model == null || Model.Id == 0);
 }
 <h2>@(newTaskMode ? "Add a new task" : "Update task")</h2>
 

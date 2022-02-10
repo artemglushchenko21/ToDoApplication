@@ -25,15 +25,11 @@ namespace ToDoApi.Controllers
     public class AccountController : Controller
     {
         private SignInManager<ApplicationUser> _signInManager;
-        private ApplicationDbContext _context;
         private readonly IApiHelper _apiHelper;
 
-        public AccountController(SignInManager<ApplicationUser> signInManager,
-                                 ApplicationDbContext applicationDbContext,
-                                 IApiHelper apiHelper)
+        public AccountController(SignInManager<ApplicationUser> signInManager, IApiHelper apiHelper)
         {
             _signInManager = signInManager;
-            _context = applicationDbContext;
             _apiHelper = apiHelper;
         }
         public IActionResult Index()
@@ -143,7 +139,7 @@ namespace ToDoApi.Controllers
                 StatusId = "open"
             };
 
-            await _apiHelper.ApiClient.PostAsJsonAsync("ToDo", task);
+            await _apiHelper.ApiClient.PostAsJsonAsync("ToDoTask", task);
         }
     }
 }

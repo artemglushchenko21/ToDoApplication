@@ -35,21 +35,19 @@ namespace ToDoApi
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddMemoryCache();
-            //services.AddSession();
 
-            services.AddSession(options => {
+            services.AddSession(options =>
+            {
                 options.IdleTimeout = TimeSpan.FromMinutes(60);
             });
 
             services.AddControllersWithViews().AddNewtonsoftJson();
 
-            var key = "ArtemHlushchenkoTokenKey";
-
+            var key = Configuration.GetValue<string>("JwtSecretKey");
 
             services.AddDbContext<ApplicationDbContext>(options =>
              options.UseSqlite(Configuration.GetConnectionString("ToDoDB")));
@@ -59,8 +57,7 @@ namespace ToDoApi
                 options.Password.RequiredLength = 6;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireDigit = false;
-            }).AddEntityFrameworkStores<ApplicationDbContext>()
-     .AddDefaultTokenProviders();
+            }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
             services.AddAuthentication(x =>
             {
@@ -79,33 +76,13 @@ namespace ToDoApi
                 };
             });
 
-           services.AddSingleton<IJwtAuthenticationManager>(new JwtAuthenticationManager(key));
-
+            services.AddSingleton<IJwtAuthenticationManager>(new JwtAuthenticationManager(key));
             services.AddSingleton<IApiHelper, ApiHelper>();
+
             services.AddScoped<IToDoTaskService, ToDoTaskService>();
             services.AddScoped<IToDoTaskFilterService, ToDoTaskFilterService>();
-
-            //  services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
-            //.AddCookie(options =>
-            //{
-            //    options.Cookie.Name = "authToken";
-            //          /// control cookie expiration
-            //          options.Cookie.Expiration = TimeSpan.FromMinutes(120);
-            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(120);
-            //    options.Events = new CookieAuthenticationEvents()
-            //    {
-            //        OnRedirectToLogin = (context) =>
-            //        {
-            //            context.HttpContext.Response.Redirect("https://example.com/test/expired.html");
-            //            return Task.CompletedTask;
-            //        }
-            //    };
-            //});
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -115,16 +92,12 @@ namespace ToDoApi
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseSession();
-
             app.UseRouting();
-
 
             app.Use(async (context, next) =>
             {
@@ -136,12 +109,8 @@ namespace ToDoApi
                 await next();
             });
 
-
-
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

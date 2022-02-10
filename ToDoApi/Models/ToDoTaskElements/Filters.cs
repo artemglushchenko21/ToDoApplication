@@ -25,11 +25,13 @@ namespace ToDoApi.Models.ToDoTaskElements
         public bool HasStatus => StatusId.ToLower() != "all";
 
         public static Dictionary<string, string> DueFilterValues =>
-            new Dictionary<string, string> {
+            new()
+            {
                 { "future", "Future" },
                 { "past", "Past" },
                 { "today", "Today" }
             };
+
         public bool IsPast => Due.ToLower() == "past";
         public bool IsFuture => Due.ToLower() == "future";
         public bool IsToday => Due.ToLower() == "today";
