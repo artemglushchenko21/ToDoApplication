@@ -65,13 +65,11 @@ namespace ToDoApi.Controllers
             ViewBag.Categories = _context.Categories.ToList();
             ViewBag.Statuses = _context.Statuses.ToList();
             ViewBag.DueFilters = Filters.DueFilterValues;
-         //  _apiHelper.ApiClient.DefaultRequestHeaders.Add("UserId", User.Identity.GetUserId());
 
             HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync("ToDo?filterId=" + id);
 
             var tasks = await response.Content.ReadAsAsync<IEnumerable<ToDo>>();
 
-            //IEnumerable<ToDo> tasks = response.Content.ReadAsAsync<IEnumerable<ToDo>>().Result;
             return View(tasks);
         }
 
@@ -92,7 +90,6 @@ namespace ToDoApi.Controllers
 
                 if (taskId == 0)
                 {
-                    //var result = await JsonSerializer.DeserializeAsync<ToDo>(await response.Content.ReadAsStreamAsync());
                     var result = await _apiHelper.ApiClient.PostAsJsonAsync("ToDo", task);
                 }
                 else

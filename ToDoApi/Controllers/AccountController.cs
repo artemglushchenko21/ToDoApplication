@@ -59,13 +59,10 @@ namespace ToDoApi.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var token = await response.Content.ReadAsAsync<AuthenticatedUser>();
-                    GetLoggedInUserInfo(token.Access_Token);
+                    var authenticatedUser = await response.Content.ReadAsAsync<AuthenticatedUser>();
+                    SetLoggedInUserInfo(authenticatedUser.Access_Token);
 
-                    HttpContext.Session.SetString("JWToken", token.Access_Token);
-
-                    if (!string.IsNullOrEmpty(model.ReturnUrl) &&
-                        Url.IsLocalUrl(model.ReturnUrl))
+                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                     {
                         return Redirect(model.ReturnUrl);
                     }
@@ -80,12 +77,14 @@ namespace ToDoApi.Controllers
             return View(model);
         }
 
-        public void GetLoggedInUserInfo(string token)
+        public void SetLoggedInUserInfo(string token)
         {
             _apiHelper.ApiClient.DefaultRequestHeaders.Clear();
             _apiHelper.ApiClient.DefaultRequestHeaders.Accept.Clear();
             _apiHelper.ApiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _apiHelper.ApiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer { token }");
+
+            HttpContext.Session.SetString("JWToken", token);
         }
 
         [HttpPost]
@@ -116,7 +115,17 @@ namespace ToDoApi.Controllers
                     throw new Exception(response.ReasonPhrase);
                 }
 
-                return RedirectToAction("Index", "Home");
+                var loginData = new LoginViewModel { Email = model.Email, Password = model.Password };
+
+                response = await _apiHelper.ApiClient.PostAsJsonAsync("Token/authenticate", loginData);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var authenticatedUser = await response.Content.ReadAsAsync<AuthenticatedUser>();
+                    SetLoggedInUserInfo(authenticatedUser.Access_Token);
+
+                    return RedirectToAction("ShowTasks", "Home");
+                }
             }
             return View(model);
         }

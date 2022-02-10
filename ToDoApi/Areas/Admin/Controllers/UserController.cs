@@ -18,7 +18,7 @@ namespace ToDoApi.Controllers
 {   
     [ApiController]
     [Authorize(Roles = "admin")]
-    [Route("api/[controller]")]
+    [Route("api/admin/[controller]")]
 
     public class UserController : ControllerBase
     {

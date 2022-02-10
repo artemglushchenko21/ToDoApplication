@@ -36,7 +36,7 @@ namespace ToDoMvc.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            HttpResponseMessage response =  await _apiHelper.ApiClient.GetAsync("User/");
+            HttpResponseMessage response =  await _apiHelper.ApiClient.GetAsync("admin/User/");
            
             var appUsers = await response.Content.ReadAsAsync<List<ApplicationUser>>(); 
 
@@ -51,7 +51,7 @@ namespace ToDoMvc.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {
-            HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync("User/" + id);
+            HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync("admin/User/" + id);
 
             var user = await response.Content.ReadAsAsync<ApplicationUser>();
             //var user = response.Content.ReadAsAsync<ApplicationUser>().Result;
@@ -62,7 +62,7 @@ namespace ToDoMvc.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            HttpResponseMessage response = await _apiHelper.ApiClient.DeleteAsync("User/" + id);
+            HttpResponseMessage response = await _apiHelper.ApiClient.DeleteAsync("admin/User/" + id);
 
             return RedirectToAction("Index");
         }
@@ -70,7 +70,7 @@ namespace ToDoMvc.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAdminRoleToUser(string id)
         {
-            HttpResponseMessage response = await _apiHelper.ApiClient.PostAsync($"User/AddAdminRoleToUser/{id}", null);
+            HttpResponseMessage response = await _apiHelper.ApiClient.PostAsync($"admin/User/AddAdminRoleToUser/{id}", null);
 
             return RedirectToAction("Index");
         }
@@ -78,7 +78,7 @@ namespace ToDoMvc.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveAdminRoleFromUser(string id)
         {
-            HttpResponseMessage response = await _apiHelper.ApiClient.PostAsync($"User/RemoveAdminRoleFromUser/{id}", null);
+            HttpResponseMessage response = await _apiHelper.ApiClient.PostAsync($"admin/User/RemoveAdminRoleFromUser/{id}", null);
 
             return RedirectToAction("Index");
         }
