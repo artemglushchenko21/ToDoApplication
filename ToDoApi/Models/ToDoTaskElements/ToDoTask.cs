@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ToDoApi.Models.ToDoTaskElements
 {
-    public class ToDo
+    public class ToDoTask
     {
         public int Id { get; set; }
 

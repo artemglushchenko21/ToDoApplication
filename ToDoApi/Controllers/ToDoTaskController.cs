@@ -17,27 +17,23 @@ namespace ToDoWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ToDoController : ControllerBase
+    public class ToDoTaskController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ToDoController(ApplicationDbContext context, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor)
+
+        public ToDoTaskController(ApplicationDbContext context)
         {
             _context = context;
-            _signInManager = signInManager;
-            _userManager = userManager;
         }
 
-        // GET: api/ToDos
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<ToDo>>> GetToDos(string filterId)
+        public async Task<ActionResult<IEnumerable<ToDoTask>>> GetToDoTasks(string filterId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            IQueryable<ToDo> query = _context.ToDos.Include(t => t.Category).Include(t => t.Status).Where(t => t.UserId == userId);
+            IQueryable<ToDoTask> query = _context.ToDos.Include(t => t.Category).Include(t => t.Status).Where(t => t.UserId == userId);
 
             var filters = new Filters(filterId);
 
@@ -64,9 +60,8 @@ namespace ToDoWebApi.Controllers
             return tasks;
         }
 
-        // GET: api/ToDoes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ToDo>> GetToDo(int id)
+        public async Task<ActionResult<ToDoTask>> GetToDoTask(int id)
         {
             var toDo = await _context.ToDos.FindAsync(id);
 
@@ -78,9 +73,8 @@ namespace ToDoWebApi.Controllers
             return toDo;
         }
 
-        // POST: api/ToDoes
         [HttpPost]
-        public async Task<ActionResult<ToDo>> PostToDo(ToDo toDo)
+        public async Task<ActionResult<ToDoTask>> PostToDoTask(ToDoTask toDo)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -92,10 +86,9 @@ namespace ToDoWebApi.Controllers
             return CreatedAtAction("GetToDo", new { id = toDo.Id }, toDo);
         }
 
-        // PUT: api/ToDoes/5
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> PutToDo(int id, ToDo toDo)
+        public async Task<IActionResult> PutToDoTask(int id, ToDoTask toDo)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             toDo.UserId = userId;
@@ -113,7 +106,7 @@ namespace ToDoWebApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ToDoExists(id))
+                if (!ToDoTaskExists(id))
                 {
                     return NotFound();
                 }
@@ -126,9 +119,8 @@ namespace ToDoWebApi.Controllers
             return NoContent();
         }
 
-        // DELETE: api/ToDoes/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteToDo(int id)
+        public async Task<IActionResult> DeleteToDoTask(int id)
         {
             var toDo = await _context.ToDos.FindAsync(id);
             if (toDo == null)
@@ -142,7 +134,7 @@ namespace ToDoWebApi.Controllers
             return NoContent();
         }
 
-        private bool ToDoExists(int id)
+        private bool ToDoTaskExists(int id)
         {
             return _context.ToDos.Any(e => e.Id == id);
         }

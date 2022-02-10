@@ -135,7 +135,7 @@ namespace ToDoApi.Controllers
 
         private async Task CreateFirstDefaultTask()
         {
-            var task = new ToDo
+            var task = new ToDoTask
             {
                 Description = "My first task",
                 CategoryId = "home",

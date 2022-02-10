@@ -18,7 +18,7 @@ namespace ToDoApi.Models.Data
         { }
 
 
-        public DbSet<ToDo> ToDos { get; set; }
+        public DbSet<ToDoTask> ToDos { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }

@@ -1,7 +1,7 @@
-﻿@model IEnumerable<ToDo>
+﻿@model IEnumerable<ToDoTask>
 @{
     ViewData["Title"] = "Home Page";
-    string Overdue(ToDo task) => task.Overdue ? "bg-warning" : "";
+    string Overdue(ToDoTask task) => task.Overdue ? "bg-warning" : "";
 }
 
 <div class="row mt-4">
@@ -51,7 +51,7 @@
             </thead>
             <tbody>
                 @if (Model == null) return;
-                @foreach (ToDo task in Model)
+                @foreach (ToDoTask task in Model)
                 {
                     string overdue = Overdue(task);
                     <tr>
@@ -69,9 +69,9 @@
                                 </select>
 
                                 <input type="hidden"
-                                       name="@nameof(ToDo.Id)" value="@task.Id" />
+                                       name="@nameof(ToDoTask.Id)" value="@task.Id" />
                                 <input type="hidden"
-                                       name="@nameof(ToDo.StatusId)" value="@task.StatusId" />
+                                       name="@nameof(ToDoTask.StatusId)" value="@task.StatusId" />
 
                             </form>
 
@@ -82,7 +82,7 @@
                                   class="mr-2" style="float: left">
 
                                 <input type="hidden"
-                                       name="@nameof(ToDo.Id)" value="@task.Id" />
+                                       name="@nameof(ToDoTask.Id)" value="@task.Id" />
                             </form>
                             <a asp-action="EditTask" asp-route-id=@task.Id class="btn btn-outline-info btn-sm mr-2" style="float: left">
                                 <span class="far fa-edit"></span>
@@ -90,7 +90,7 @@
                             <form asp-action="DeleteTask" method="post"
                                   asp-route-id="@ViewBag.Filters.FilterString" class="mr-2" style="float: left">
                                 <input type="hidden"
-                                       name="@nameof(ToDo.Id)" value="@task.Id" />
+                                       name="@nameof(ToDoTask.Id)" value="@task.Id" />
                                 <button type="submit" class="btn btn-outline-info btn-sm">
                                     <span class="far fa-trash-alt"></span>
                                 </button>
