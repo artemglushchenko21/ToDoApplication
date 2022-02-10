@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ToDoApi.Models.Data;
 using ToDoApi.Models;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
@@ -79,6 +78,20 @@ namespace ToDoWebApi.Controllers
             return toDo;
         }
 
+        // POST: api/ToDoes
+        [HttpPost]
+        public async Task<ActionResult<ToDo>> PostToDo(ToDo toDo)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            toDo.UserId = userId;
+
+            _context.ToDos.Add(toDo);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetToDo", new { id = toDo.Id }, toDo);
+        }
+
         // PUT: api/ToDoes/5
         [HttpPut("{id}")]
         [Authorize]
@@ -111,20 +124,6 @@ namespace ToDoWebApi.Controllers
             }
 
             return NoContent();
-        }
-
-        // POST: api/ToDoes
-        [HttpPost]
-        public async Task<ActionResult<ToDo>> PostToDo(ToDo toDo)
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            toDo.UserId = userId;
-
-            _context.ToDos.Add(toDo);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetToDo", new { id = toDo.Id }, toDo);
         }
 
         // DELETE: api/ToDoes/5
