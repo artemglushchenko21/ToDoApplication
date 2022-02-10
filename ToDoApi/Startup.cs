@@ -21,6 +21,8 @@ using ToDoApi.Models.Data;
 using ToDoMvc.Models;
 using ToDoMvc.Models.Helpers;
 using ToDoMvc.Services.Authentication;
+using ToDoMvc.Services.ToDoTaskService;
+using ToDoWebApi.Controllers;
 
 namespace ToDoApi
 {
@@ -80,6 +82,8 @@ namespace ToDoApi
            services.AddSingleton<IJwtAuthenticationManager>(new JwtAuthenticationManager(key));
 
             services.AddSingleton<IApiHelper, ApiHelper>();
+            services.AddScoped<IToDoTaskService, ToDoTaskService>();
+            services.AddScoped<IToDoTaskFilterService, ToDoTaskFilterService>();
 
             //  services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

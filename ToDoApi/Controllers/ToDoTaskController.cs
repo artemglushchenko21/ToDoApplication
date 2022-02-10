@@ -1,142 +1,78 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ToDoApi.Models.Data;
-using ToDoApi.Models;
-using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using System.Net;
 using ToDoApi.Models.ToDoTaskElements;
+using ToDoMvc.Models.DTOs;
 
 namespace ToDoWebApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ToDoTaskController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IToDoTaskService _toDoTaskService;
 
-
-        public ToDoTaskController(ApplicationDbContext context)
+        public ToDoTaskController(IToDoTaskService toDoTaskService)
         {
-            _context = context;
+            _toDoTaskService = toDoTaskService;
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<ToDoTask>>> GetToDoTasks(string filterId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            IQueryable<ToDoTask> query = _context.ToDos.Include(t => t.Category).Include(t => t.Status).Where(t => t.UserId == userId);
-
-            var filters = new Filters(filterId);
-
-            if (filters.HasCategory)
-            {
-                query = query.Where(t => t.CategoryId == filters.CategoryId);
-            }
-            if (filters.HasStatus)
-            {
-                query = query.Where(t => t.StatusId == filters.StatusId);
-            }
-            if (filters.HasDue)
-            {
-                var today = DateTime.Today;
-                if (filters.IsPast)
-                    query = query.Where(t => t.DueDate < today);
-                else if (filters.IsFuture)
-                    query = query.Where(t => t.DueDate > today);
-                else if (filters.IsToday)
-                    query = query.Where(t => t.DueDate == today);
-            }
-            var tasks = await query.OrderBy(t => t.DueDate).ToListAsync();
-
-            return tasks;
+            return await _toDoTaskService.GetToDoTasks(userId, filterId);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ToDoTask>> GetToDoTask(int id)
         {
-            var toDo = await _context.ToDos.FindAsync(id);
+            var toDoTask = await _toDoTaskService.GetToDoTask(id);
 
-            if (toDo == null)
-            {
-                return NotFound();
-            }
-
-            return toDo;
+            return toDoTask;
         }
 
         [HttpPost]
-        public async Task<ActionResult<ToDoTask>> PostToDoTask(ToDoTask toDo)
+        public async Task<ActionResult<ToDoTask>> PostToDoTask(ToDoTask toDoTask)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            toDoTask.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _toDoTaskService.PostToDoTask(toDoTask);
 
-            toDo.UserId = userId;
-
-            _context.ToDos.Add(toDo);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetToDo", new { id = toDo.Id }, toDo);
+            return CreatedAtAction("GetToDoTask", new { id = toDoTask.Id }, toDoTask);
         }
 
+
+
         [HttpPut("{id}")]
-        [Authorize]
         public async Task<IActionResult> PutToDoTask(int id, ToDoTask toDo)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            toDo.UserId = userId;
+            toDo.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (id != toDo.Id)
-            {
-                return BadRequest();
-            }
+            if (id != toDo.Id) return BadRequest();
 
-            _context.Entry(toDo).State = EntityState.Modified;
+            var result = await _toDoTaskService.PutToDoTask(id, toDo);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ToDoTaskExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            if (result == false) return NotFound();
 
             return NoContent();
+        }
+
+        [HttpPost("ModifyToDoTaskStatus")]
+        public async Task ModifyToDoTaskStatus(TaskStatusDTO taskStatus)
+        {
+           await _toDoTaskService.ModifyTaskStatus(taskStatus.TaskId, taskStatus.TaskStatusId);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteToDoTask(int id)
         {
-            var toDo = await _context.ToDos.FindAsync(id);
-            if (toDo == null)
-            {
-                return NotFound();
-            }
-
-            _context.ToDos.Remove(toDo);
-            await _context.SaveChangesAsync();
+            await _toDoTaskService.DeleteToDoTask(id);
 
             return NoContent();
-        }
-
-        private bool ToDoTaskExists(int id)
-        {
-            return _context.ToDos.Any(e => e.Id == id);
         }
     }
 }

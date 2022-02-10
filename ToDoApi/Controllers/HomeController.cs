@@ -18,7 +18,9 @@ using ToDoApi.Models.Data;
 using ToDoApi.Models.ToDoTaskElements;
 using ToDoApi.Models.ViewModels;
 using ToDoMvc;
+using ToDoMvc.Models.DTOs;
 using ToDoMvc.Models.Helpers;
+using ToDoMvc.Services.ToDoTaskService;
 
 namespace ToDoApi.Controllers
 {
@@ -28,29 +30,25 @@ namespace ToDoApi.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IApiHelper _apiHelper;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IToDoTaskFilterService _toDoTaskFilterService;
 
-        public HomeController(ILogger<HomeController> logger, 
-            ApplicationDbContext applicationDbContext, 
+        public HomeController(ILogger<HomeController> logger,
+            ApplicationDbContext applicationDbContext,
             IApiHelper apiHelper,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IToDoTaskFilterService toDoTaskFilterService)
         {
             _context = applicationDbContext;
             _apiHelper = apiHelper;
             _logger = logger;
             _userManager = userManager;
+            _toDoTaskFilterService = toDoTaskFilterService;
         }
 
         public IActionResult Privacy()
         {
             return View();
         }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
 
         public IActionResult Index()
         {
@@ -62,8 +60,8 @@ namespace ToDoApi.Controllers
         {
             var filters = new Filters(id);
             ViewBag.Filters = filters;
-            ViewBag.Categories = _context.Categories.ToList();
-            ViewBag.Statuses = _context.Statuses.ToList();
+            ViewBag.Categories = _toDoTaskFilterService.Categories;
+            ViewBag.Statuses = _toDoTaskFilterService.Statuses;
             ViewBag.DueFilters = Filters.DueFilterValues;
 
             HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync($"ToDoTask?filterId={id}");
@@ -76,8 +74,9 @@ namespace ToDoApi.Controllers
         [Authorize]
         public IActionResult AddTask()
         {
-            ViewBag.Categories = _context.Categories.ToList();
-            ViewBag.Statuses = _context.Statuses.ToList();
+            ViewBag.Categories = _toDoTaskFilterService.Categories;
+            ViewBag.Statuses = _toDoTaskFilterService.Statuses;
+
             return View();
         }
 
@@ -95,13 +94,13 @@ namespace ToDoApi.Controllers
                 else
                 {
                     var result = await _apiHelper.ApiClient.PutAsJsonAsync($"ToDoTask/{taskId}", task);
-                }               
+                }
                 return RedirectToAction(nameof(ShowTasks));
             }
             else
             {
-                ViewBag.Categories = _context.Categories.ToList();
-                ViewBag.Statuses = _context.Statuses.ToList();
+                ViewBag.Categories = _toDoTaskFilterService.Categories;
+                ViewBag.Statuses = _toDoTaskFilterService.Statuses;
 
                 return View(task);
             }
@@ -115,13 +114,15 @@ namespace ToDoApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult CompleteTask(string statusName, [FromRoute] string id, ToDoTask selected)
+        public async Task<IActionResult> CompleteTask(string statusName, [FromRoute] string id, ToDoTask selected)
         {
-            selected = _context.ToDos.Find(selected.Id);
-            selected.StatusId = statusName;
+            var taskStatus = new TaskStatusDTO
+            {
+                TaskId = selected.Id,
+                TaskStatusId = statusName
+            };
 
-            _context.ToDos.Update(selected);
-            _context.SaveChanges();
+            var result = await _apiHelper.ApiClient.PostAsJsonAsync($"ToDoTask/ModifyToDoTaskStatus/", taskStatus);
 
             return RedirectToAction(nameof(ShowTasks), new { ID = id });
         }
@@ -141,7 +142,7 @@ namespace ToDoApi.Controllers
 
             ModelState.Clear();
 
-            return View(nameof(AddTask),result);
+            return View(nameof(AddTask), result);
         }
 
         [HttpPost]
@@ -161,6 +162,12 @@ namespace ToDoApi.Controllers
             var user = await _userManager.FindByEmailAsync(email);
 
             return View("UserProfile", user);
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
