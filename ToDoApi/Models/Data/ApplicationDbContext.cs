@@ -49,6 +49,7 @@ namespace ToDoApi.Models.Data
             string adminEmail = config.GetValue<string>("AdminCredentials:Email");
             string adminPassword = config.GetValue<string>("AdminCredentials:Password");
             string adminRole = config.GetValue<string>("AdminCredentials:Role");
+            string memberRole = "member";
 
 
             if (await roleManager.FindByNameAsync(adminRole) == null)
@@ -56,18 +57,24 @@ namespace ToDoApi.Models.Data
                 await roleManager.CreateAsync(new IdentityRole(adminRole));
             }
 
-            ApplicationUser appUser = new()
-            {
-                Email = adminEmail,
-                UserName = adminEmail
-            };
 
-            var result = await userManager.CreateAsync(appUser, adminPassword);
-
-            if (result.Succeeded)
+            if (await roleManager.FindByNameAsync(memberRole) == null)
             {
-                await userManager.AddToRoleAsync(appUser, adminRole);
+                await roleManager.CreateAsync(new IdentityRole(memberRole));
             }
+
+            //ApplicationUser appUser = new()
+            //{
+            //    Email = adminEmail,
+            //    UserName = adminEmail
+            //};
+
+            //var result = await userManager.CreateAsync(appUser, adminPassword);
+
+            //if (result.Succeeded)
+            //{
+            //    await userManager.AddToRoleAsync(appUser, adminRole);
+            //}
         }
     }
 

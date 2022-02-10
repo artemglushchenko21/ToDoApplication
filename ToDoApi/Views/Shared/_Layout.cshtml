@@ -1,5 +1,5 @@
 ﻿@{ var current = ViewContext.RouteData.Values["area"]?.ToString() ??
-                            ViewContext.RouteData.Values["controller"]?.ToString(); }
+                             ViewContext.RouteData.Values["controller"]?.ToString(); }
 @{var action = ViewContext.RouteData.Values["action"]?.ToString();}
 
 <!DOCTYPE html>
@@ -30,9 +30,7 @@
 
                     @if (User.Identity.IsAuthenticated)
                     {
-
-                        string roles = User.FindFirstValue(ClaimTypes.Role);
-                        if (roles != null && roles.Contains("admin"))
+                        if (User.IsAdmin())
                         {
                             <li class="nav-item @Nav.Active("Register", action)">
                                 <a class="nav-link" asp-action="Index" asp-controller="UserView" asp-area="Admin">

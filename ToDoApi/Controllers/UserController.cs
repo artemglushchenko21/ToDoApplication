@@ -77,7 +77,21 @@ namespace ToDoMvc.Controllers
                     ModelState.AddModelError("", error.Description);
                 }
             }
+
+            await AssignDefaultRoleToUser(user);
+
             return result;
+        }
+
+        private async Task AssignDefaultRoleToUser(ApplicationUser user)
+        {
+            string defaultRole = "member";
+            if (await _roleManager.FindByNameAsync(defaultRole) == null)
+            {
+                await _roleManager.CreateAsync(new IdentityRole(defaultRole));
+            }
+
+            await _userManager.AddToRoleAsync(user, defaultRole);
         }
 
         // PUT api/<UserController>/5
