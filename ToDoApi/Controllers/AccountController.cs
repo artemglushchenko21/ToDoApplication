@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ExtensionsLibrary;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Models.Data;
@@ -54,6 +56,7 @@ namespace ToDoApi.Controllers
                 var loginData = new LoginViewModel { Email = model.Email, Password = model.Password };
 
                 HttpResponseMessage response = await _apiHelper.ApiClient.PostAsJsonAsync("Token/authenticate", loginData);
+
                 if (response.IsSuccessStatusCode)
                 {
                     var token = await response.Content.ReadAsAsync<AuthenticatedUser>();

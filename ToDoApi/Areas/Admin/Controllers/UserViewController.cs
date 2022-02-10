@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ExtensionsLibrary;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoMvc.Areas.Admin.Models;
@@ -35,7 +37,8 @@ namespace ToDoMvc.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             HttpResponseMessage response =  await _apiHelper.ApiClient.GetAsync("User/");
-            var appUsers = response.Content.ReadAsAsync<List<ApplicationUser>>().Result;
+           
+            var appUsers = await response.Content.ReadAsAsync<List<ApplicationUser>>(); 
 
             UserViewModel model = new()
             {
@@ -49,7 +52,9 @@ namespace ToDoMvc.Areas.Admin.Controllers
         public async Task<IActionResult> EditUser(string id)
         {
             HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync("User/" + id);
-            var user = response.Content.ReadAsAsync<ApplicationUser>().Result;
+
+            var user = await response.Content.ReadAsAsync<ApplicationUser>();
+            //var user = response.Content.ReadAsAsync<ApplicationUser>().Result;
 
             return View("Edit", user);
         }

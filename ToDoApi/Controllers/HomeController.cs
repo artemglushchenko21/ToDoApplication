@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ExtensionsLibrary;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Models.Data;
@@ -66,7 +69,9 @@ namespace ToDoApi.Controllers
 
             HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync("ToDo?filterId=" + id);
 
-            IEnumerable<ToDo> tasks = response.Content.ReadAsAsync<IEnumerable<ToDo>>().Result;
+            var tasks = await response.Content.ReadAsAsync<IEnumerable<ToDo>>();
+
+            //IEnumerable<ToDo> tasks = response.Content.ReadAsAsync<IEnumerable<ToDo>>().Result;
             return View(tasks);
         }
 
@@ -87,6 +92,7 @@ namespace ToDoApi.Controllers
 
                 if (taskId == 0)
                 {
+                    //var result = await JsonSerializer.DeserializeAsync<ToDo>(await response.Content.ReadAsStreamAsync());
                     var result = await _apiHelper.ApiClient.PostAsJsonAsync("ToDo", task);
                 }
                 else
@@ -124,14 +130,14 @@ namespace ToDoApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult EditTask([FromRoute] string id, ToDo selected)
+        public async Task<IActionResult> EditTask([FromRoute] string id, ToDo selected)
         {
             string taskId = selected.Id.ToString();
 
-            HttpResponseMessage response = _apiHelper.ApiClient.GetAsync("ToDo/" + taskId).Result;
+            HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync("ToDo/" + taskId);
 
             //    return RedirectToAction(nameof(AddTask), new { ID = id });
-            var result = response.Content.ReadAsAsync<ToDo>().Result;
+            var result = await response.Content.ReadAsAsync<ToDo>();
 
             ViewBag.Categories = _context.Categories.ToList();
             ViewBag.Statuses = _context.Statuses.ToList();
