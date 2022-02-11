@@ -90,6 +90,8 @@ namespace ToDoApi
             services.AddScoped<IToDoTaskFilterService, ToDoTaskFilterService>();
             services.AddScoped<IToDoRepository<ToDoTask>, ToDoRepository>();
             services.AddScoped<IUserService, UserService>();
+
+            services.AddHttpContextAccessor();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

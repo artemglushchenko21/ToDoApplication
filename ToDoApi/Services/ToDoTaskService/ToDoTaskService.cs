@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,10 +17,12 @@ namespace ToDoMvc.Services.ToDoTaskService
     public class ToDoTaskService : IToDoTaskService
     {
         private readonly IToDoRepository<ToDoTask> _toDoRepo;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ToDoTaskService(IToDoRepository<ToDoTask> toDoRepo)
+        public ToDoTaskService(IToDoRepository<ToDoTask> toDoRepo, IHttpContextAccessor httpContextAccessor)
         {
             _toDoRepo = toDoRepo;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ActionResult<ToDoTask>> GetToDoTask(int id)
@@ -39,6 +42,8 @@ namespace ToDoMvc.Services.ToDoTaskService
 
         public async Task PostToDoTask(ToDoTask toDoTask)
         {
+            toDoTask.UserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             await _toDoRepo.Insert(toDoTask);
 
             await _toDoRepo.Save();

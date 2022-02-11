@@ -40,7 +40,6 @@ namespace ToDoMvc.ControllersApi
         [HttpPost]
         public async Task<ActionResult<ToDoTask>> PostToDoTask(ToDoTask toDoTask)
         {
-            toDoTask.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _toDoTaskService.PostToDoTask(toDoTask);
 
             return CreatedAtAction("GetToDoTask", new { id = toDoTask.Id }, toDoTask);
