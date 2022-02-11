@@ -56,9 +56,19 @@ namespace ToDoMvc.Models.Data.Repositories
            await _dbset.AddAsync(entity);
         }
 
-        public void Update(T entity)
+        public async Task Update(int id, T entity)
         {
-            _dbset.Update(entity);
+            if (await ToDoTaskExists(id))
+            {
+                _dbset.Update(entity);
+            }      
+        }
+
+        private async Task<bool> ToDoTaskExists(int id)
+        {
+            var result = await _context.ToDos.AnyAsync(e => e.Id == id);
+
+            return result;
         }
 
         public async Task Delete(int id)

@@ -8,7 +8,6 @@ namespace ToDoMvc.Models.Data.Repositories
     public interface IRepository<T> where T : class
     {
         IEnumerable<T> List(QueryOptions<T> options);
-
         Task<List<T>> GetList(QueryOptions<T> options);
 
         T Get(QueryOptions<T> options);
@@ -16,9 +15,8 @@ namespace ToDoMvc.Models.Data.Repositories
         Task<T> Get(string id);
 
         Task Insert(T entity);
-        void Update(T entity);
+        Task Update(int id, T entity);
         Task Delete(int id);
-
         Task Save();
     }
 }

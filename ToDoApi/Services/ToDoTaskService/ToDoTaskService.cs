@@ -15,14 +15,10 @@ namespace ToDoMvc.Services.ToDoTaskService
 {
     public class ToDoTaskService : IToDoTaskService
     {
-        private readonly ApplicationDbContext _context;
-        private readonly Repository<ToDoTask> _toDoTaskRepo;
         private readonly IToDoRepository<ToDoTask> _toDoRepo;
 
-        public ToDoTaskService(ApplicationDbContext context, IToDoRepository<ToDoTask> toDoRepo)
+        public ToDoTaskService( IToDoRepository<ToDoTask> toDoRepo)
         {
-            _context = context;
-            _toDoTaskRepo = new Repository<ToDoTask>(context);
             _toDoRepo = toDoRepo;
         }
 
@@ -50,23 +46,9 @@ namespace ToDoMvc.Services.ToDoTaskService
 
         public async Task PutToDoTask(int id, ToDoTask toDoTask)
         {
-            _toDoRepo.Update(toDoTask);
+           await _toDoRepo.Update(id, toDoTask);
 
-            try
-            {
-                await _toDoRepo.Save();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ToDoTaskExists(id).Result)
-                {
-                    return;
-                }
-                else
-                {
-                    throw;
-                }
-            }
+           await _toDoRepo.Save();
         }
 
         public async Task DeleteToDoTask(int id)
@@ -74,13 +56,6 @@ namespace ToDoMvc.Services.ToDoTaskService
             await _toDoRepo.Delete(id);
 
             await _toDoRepo.Save();
-        }
-
-        private async Task<bool> ToDoTaskExists(int id)
-        {
-            var result = await _context.ToDos.AnyAsync(e => e.Id == id);
-
-            return result;
         }
 
         public async Task ModifyTaskStatus(int taskId, string statusName)
@@ -114,12 +89,17 @@ namespace ToDoMvc.Services.ToDoTaskService
             {
                 var today = DateTime.Today;
                 if (filters.IsPast)
+                {
                     queryOptions.Where = w => w.DueDate < today;
-
+                }
                 else if (filters.IsFuture)
+                {
                     queryOptions.Where = w => w.DueDate > today;
+                }    
                 else if (filters.IsToday)
+                {
                     queryOptions.Where = w => w.DueDate == today;
+                }                
             }
 
             queryOptions.OrderBy = a => a.DueDate;

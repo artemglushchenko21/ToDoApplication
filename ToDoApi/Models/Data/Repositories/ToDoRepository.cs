@@ -19,7 +19,7 @@ namespace ToDoMvc.Models.Data.Repositories
 
             task.StatusId = statusValue;
 
-            Update(task);
+            await Update(id, task);
         }
     }
 }
