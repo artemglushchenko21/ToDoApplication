@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ToDoApi.Models.ToDoTaskElements;
 
-namespace ToDoWebApi.Controllers
+namespace ToDoMvc.Services.ToDoTaskService
 {
     public interface IToDoTaskService
     {
