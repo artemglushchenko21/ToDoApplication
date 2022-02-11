@@ -29,15 +29,19 @@ using ToDoMvc.Services.UserService;
 
 namespace ToDoApi
 {
+    //https://stackoverflow.com/questions/30701006/how-to-get-the-current-logged-in-user-id-in-asp-net-core
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            StaticConfig = configuration;
         }
 
+        public static IConfiguration StaticConfig { get; private set; }
         public IConfiguration Configuration { get; }
-
+      
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRouting(options => options.LowercaseUrls = true);

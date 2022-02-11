@@ -48,8 +48,8 @@ namespace ToDoApi.Models.Data
 
             string adminEmail = config.GetValue<string>("AdminCredentials:Email");
             string adminPassword = config.GetValue<string>("AdminCredentials:Password");
-            string adminRole = config.GetValue<string>("AdminCredentials:Role");
-            string memberRole = "member";
+            string adminRole = config.GetValue<string>("RoleNames:AdminRole");
+            string memberRole = config.GetValue<string>("RoleNames:DefaultRole");
 
 
             if (await roleManager.FindByNameAsync(adminRole) == null)

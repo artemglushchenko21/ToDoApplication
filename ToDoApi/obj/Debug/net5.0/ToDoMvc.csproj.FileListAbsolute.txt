@@ -184,4 +184,3 @@ C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\ToDoMvc.dll
 C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\ref\ToDoMvc.dll
 C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\ToDoMvc.pdb
 C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\ToDoMvc.genruntimeconfig.cache
-C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\ToDoMvc.csproj.AssemblyReference.cache

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
-using System.Threading.Tasks;
+using ToDoApi;
 
 namespace ToDoMvc.Extensions.ClaimsPrincipalExtensions
 {
@@ -10,7 +8,8 @@ namespace ToDoMvc.Extensions.ClaimsPrincipalExtensions
     {
         public static bool IsAdmin (this ClaimsPrincipal user)
         {
-            return user.IsInRole("admin");
+            string adminRoleName = Startup.StaticConfig.GetValue<string>("RoleNames:AdminRole");
+            return user.IsInRole(adminRoleName);
         }
     }
 }

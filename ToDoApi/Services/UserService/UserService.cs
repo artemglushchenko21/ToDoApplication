@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,16 +17,19 @@ namespace ToDoMvc.Services.UserService
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _config;
 
         public UserService(ApplicationDbContext context,
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IConfiguration config)
         {
             _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
+            _config = config;
         }
 
         public Task AddAdminRoleToUser(string id)
@@ -40,7 +44,7 @@ namespace ToDoMvc.Services.UserService
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.Email,
-                UserName = model.Email//$"{ model.FirstName }{ model.LastName }"
+                UserName = model.Email
             };
             var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -91,7 +95,8 @@ namespace ToDoMvc.Services.UserService
 
         private async Task AssignDefaultRoleToUser(ApplicationUser user)
         {
-            string defaultRole = "member";
+            string defaultRole = _config.GetValue<string>("RoleNames:DefaultRole"); //"member";
+
             if (await _roleManager.FindByNameAsync(defaultRole) == null)
             {
                 await _roleManager.CreateAsync(new IdentityRole(defaultRole));

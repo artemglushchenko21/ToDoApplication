@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,18 +22,21 @@ namespace ToDoMvc.Areas.Admin.ControllersApi
         private readonly RoleManager<IdentityRole> _roleManager;      
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IUserService _userService;
+        private readonly IConfiguration _config;
 
         public UserController(ApplicationDbContext context,
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IUserService userService)
+            IUserService userService,
+            IConfiguration config)
         {
             _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
             _userService = userService;
+            _config = config;
         }
 
         [HttpGet]
@@ -93,7 +97,7 @@ namespace ToDoMvc.Areas.Admin.ControllersApi
         [HttpPost("AddAdminRoleToUser/{id}")]
         public async Task AddAdminRoleToUser(string id)
         {
-            IdentityRole adminRole = await _roleManager.FindByNameAsync("admin");
+            IdentityRole adminRole = await _roleManager.FindByNameAsync(_config.GetValue<string>("RoleNames:AdminRole"));
 
             if (adminRole != null)
             {
@@ -106,7 +110,8 @@ namespace ToDoMvc.Areas.Admin.ControllersApi
         public async Task RemoveAdminRoleFromUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            await _userManager.RemoveFromRoleAsync(user, "admin");
+            string adminRoleName =_config.GetValue<string>("RoleNames:AdminRole");
+            await _userManager.RemoveFromRoleAsync(user, adminRoleName);
         }
     }
 }
