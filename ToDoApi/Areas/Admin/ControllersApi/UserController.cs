@@ -1,25 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Models.Data;
 using ToDoApi.Models.ViewModels;
 
-namespace ToDoApi.Controllers
-{   
+namespace ToDoMvc.Areas.Admin.ControllersApi
+{
     [ApiController]
     [Authorize(Roles = "admin")]
     [Route("api/admin/[controller]")]
-
     public class UserController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -38,7 +31,7 @@ namespace ToDoApi.Controllers
             _roleManager = roleManager;
         }
 
-        [HttpGet]   
+        [HttpGet]
         public async Task<IEnumerable<ApplicationUser>> GetAllUsers()
         {
             List<ApplicationUser> appUsers = new();
@@ -58,7 +51,7 @@ namespace ToDoApi.Controllers
             user.RoleNames = await _userManager.GetRolesAsync(user);
         }
 
-        [HttpGet("{id}")]   
+        [HttpGet("{id}")]
         public async Task<ApplicationUser> GetUserById(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -75,7 +68,7 @@ namespace ToDoApi.Controllers
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.Email,
-                UserName = $"{ model.FirstName }{ model.LastName }" 
+                UserName = $"{ model.FirstName }{ model.LastName }"
             };
             var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -131,14 +124,14 @@ namespace ToDoApi.Controllers
             {
                 var user = await _userManager.FindByIdAsync(id);
                 await _userManager.AddToRoleAsync(user, adminRole.Name);
-            }        
+            }
         }
 
         [HttpPost("RemoveAdminRoleFromUser/{id}")]
         public async Task RemoveAdminRoleFromUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            var result = await _userManager.RemoveFromRoleAsync(user, "admin");
+            await _userManager.RemoveFromRoleAsync(user, "admin");
         }
     }
 }

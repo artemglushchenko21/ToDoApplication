@@ -28,7 +28,6 @@ namespace ToDoMvc.ControllersApi
             _roleManager = roleManager;
         }
 
-
         // GET: api/<UserController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -42,7 +41,6 @@ namespace ToDoMvc.ControllersApi
         {
             return "value";
         }
-
 
         [HttpPost]
         public async Task<IdentityResult> CreateUser(RegisterViewModel model)

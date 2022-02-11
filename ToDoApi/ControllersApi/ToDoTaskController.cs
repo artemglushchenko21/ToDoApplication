@@ -46,8 +46,6 @@ namespace ToDoMvc.ControllersApi
             return CreatedAtAction("GetToDoTask", new { id = toDoTask.Id }, toDoTask);
         }
 
-
-
         [HttpPut("{id}")]
         public async Task<IActionResult> PutToDoTask(int id, ToDoTask toDo)
         {
