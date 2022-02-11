@@ -9,6 +9,8 @@ namespace ToDoMvc.Models.Data.Repositories
     {
         IEnumerable<T> List(QueryOptions<T> options);
 
+        Task<List<T>> GetList(QueryOptions<T> options);
+
         T Get(QueryOptions<T> options);
         Task<T> Get(int id);
         Task<T> Get(string id);

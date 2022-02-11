@@ -18,7 +18,9 @@ using System.Text;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Models.Data;
+using ToDoApi.Models.ToDoTaskElements;
 using ToDoMvc.Models;
+using ToDoMvc.Models.Data.Repositories;
 using ToDoMvc.Models.Helpers;
 using ToDoMvc.Services.Authentication;
 using ToDoMvc.Services.ToDoTaskService;
@@ -81,6 +83,7 @@ namespace ToDoApi
 
             services.AddScoped<IToDoTaskService, ToDoTaskService>();
             services.AddScoped<IToDoTaskFilterService, ToDoTaskFilterService>();
+            services.AddScoped<IToDoRepository<ToDoTask>, ToDoRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

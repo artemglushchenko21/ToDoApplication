@@ -9,9 +9,9 @@ namespace ToDoMvc.Models.Data.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _context;
+        protected readonly ApplicationDbContext _context;
 
-        private DbSet<T> _dbset { get; set; }
+        protected DbSet<T> _dbset { get; set; }
 
         public Repository(ApplicationDbContext context)
         {

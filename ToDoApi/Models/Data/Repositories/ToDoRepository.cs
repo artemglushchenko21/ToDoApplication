@@ -9,25 +9,17 @@ using ToDoApi.Models.ToDoTaskElements;
 
 namespace ToDoMvc.Models.Data.Repositories
 {
-    public class ToDoRepository<T> : Repository<T> where T: class, IToDoRepository<T>
+    public class ToDoRepository : Repository<ToDoTask>, IToDoRepository<ToDoTask>
     {
-        private readonly ApplicationDbContext _context;
-        private DbSet<T> _dbset;
+        public ToDoRepository(ApplicationDbContext context) : base(context) { }
 
-        public ToDoRepository(ApplicationDbContext context) : base(context)
+        public async Task SetTaskStatus(int id, string statusValue)
         {
-            _context = context;
-            _dbset = _context.Set<T>();
-        }
+            ToDoTask task = await _dbset.FindAsync(id);
 
-        public async Task SetTaskStatus(int id, string statusValues, string taskStatusPropertyName)
-        {
-            T entity = await _dbset.FindAsync(id);
+            task.StatusId = statusValue;
 
-            entity.GetType().GetProperty(taskStatusPropertyName).SetValue(entity, statusValues, null);
-
-            Update(entity);
-            await _context.SaveChangesAsync();
+            Update(task);
         }
     }
 }

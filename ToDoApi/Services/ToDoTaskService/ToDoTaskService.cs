@@ -17,16 +17,18 @@ namespace ToDoMvc.Services.ToDoTaskService
     {
         private readonly ApplicationDbContext _context;
         private readonly Repository<ToDoTask> _toDoTaskRepo;
+        private readonly IToDoRepository<ToDoTask> _toDoRepo;
 
-        public ToDoTaskService(ApplicationDbContext context)
+        public ToDoTaskService(ApplicationDbContext context, IToDoRepository<ToDoTask> toDoRepo)
         {
             _context = context;
             _toDoTaskRepo = new Repository<ToDoTask>(context);
+            _toDoRepo = toDoRepo;
         }
 
         public async Task<ActionResult<ToDoTask>> GetToDoTask(int id)
         {
-            var toDoTask = await _toDoTaskRepo.Get(id);
+            var toDoTask = await _toDoRepo.Get(id);
 
             return toDoTask;
         }
@@ -34,31 +36,31 @@ namespace ToDoMvc.Services.ToDoTaskService
         public async Task<ActionResult<IEnumerable<ToDoTask>>> GetToDoTasks(string userId, string filterId)
         {
             var queryOptions = BuildQueryWithFilters(userId, filterId);
-            var tasks = await _toDoTaskRepo.GetList(queryOptions);
+            var tasks = await _toDoRepo.GetList(queryOptions);
 
             return tasks;
         }
 
         public async Task PostToDoTask(ToDoTask toDoTask)
         {
-            await _toDoTaskRepo.Insert(toDoTask);
+            await _toDoRepo.Insert(toDoTask);
 
-            await _toDoTaskRepo.Save();
+            await _toDoRepo.Save();
         }
 
         public async Task PutToDoTask(int id, ToDoTask toDoTask)
         {
-            _toDoTaskRepo.Update(toDoTask);
+            _toDoRepo.Update(toDoTask);
 
             try
             {
-               await _toDoTaskRepo.Save();
+                await _toDoRepo.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!ToDoTaskExists(id).Result)
                 {
-                    return ;
+                    return;
                 }
                 else
                 {
@@ -69,26 +71,23 @@ namespace ToDoMvc.Services.ToDoTaskService
 
         public async Task DeleteToDoTask(int id)
         {
-            await _toDoTaskRepo.Delete(id);
+            await _toDoRepo.Delete(id);
 
-            await _toDoTaskRepo.Save();
+            await _toDoRepo.Save();
         }
 
         private async Task<bool> ToDoTaskExists(int id)
         {
-            var result =  await _context.ToDos.AnyAsync(e => e.Id == id);
+            var result = await _context.ToDos.AnyAsync(e => e.Id == id);
 
             return result;
         }
 
         public async Task ModifyTaskStatus(int taskId, string statusName)
         {
-            var task = _context.ToDos.Find(taskId);
-            task.StatusId = statusName;
+            await _toDoRepo.SetTaskStatus(taskId, statusName);
 
-            _context.ToDos.Update(task);
-
-            await _context.SaveChangesAsync();
+            await _toDoRepo.Save();
         }
 
         private static QueryOptions<ToDoTask> BuildQueryWithFilters(string userId, string filterId)
