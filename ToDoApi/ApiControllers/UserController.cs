@@ -8,25 +8,21 @@ using ToDoApi.Models;
 using ToDoApi.Models.Data;
 using ToDoApi.Models.ViewModels;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace ToDoMvc.Controllers
+namespace ToDoMvc.ApiControllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public UserController(ApplicationDbContext context,
-            SignInManager<ApplicationUser> signInManager,
+        public UserController(SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
-            _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
@@ -47,11 +43,6 @@ namespace ToDoMvc.Controllers
             return "value";
         }
 
-        // POST api/<UserController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
 
         [HttpPost]
         public async Task<IdentityResult> CreateUser(RegisterViewModel model)

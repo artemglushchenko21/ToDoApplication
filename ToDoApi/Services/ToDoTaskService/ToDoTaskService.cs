@@ -8,7 +8,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using ToDoApi.Models.Data;
 using ToDoApi.Models.ToDoTaskElements;
-using ToDoWebApi.Controllers;
 
 
 namespace ToDoMvc.Services.ToDoTaskService
