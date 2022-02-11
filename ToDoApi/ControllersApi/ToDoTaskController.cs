@@ -53,9 +53,9 @@ namespace ToDoMvc.ControllersApi
 
             if (id != toDo.Id) return BadRequest();
 
-            var result = await _toDoTaskService.PutToDoTask(id, toDo);
+             await _toDoTaskService.PutToDoTask(id, toDo);
 
-            if (result == false) return NotFound();
+            //if (result.) return NotFound();
 
             return NoContent();
         }

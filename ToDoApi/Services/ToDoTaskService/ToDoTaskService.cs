@@ -46,45 +46,39 @@ namespace ToDoMvc.Services.ToDoTaskService
             await _toDoTaskRepo.Save();
         }
 
-        public async Task<bool> PutToDoTask(int id, ToDoTask toDoTask)
+        public async Task PutToDoTask(int id, ToDoTask toDoTask)
         {
-            _context.Entry(toDoTask).State = EntityState.Modified;
+            _toDoTaskRepo.Update(toDoTask);
 
             try
             {
-                await _context.SaveChangesAsync();
+               await _toDoTaskRepo.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ToDoTaskExists(id))
+                if (!ToDoTaskExists(id).Result)
                 {
-                    return false;
+                    return ;
                 }
                 else
                 {
                     throw;
                 }
             }
-            return true;
         }
 
         public async Task DeleteToDoTask(int id)
         {
-            var toDo = await _context.ToDos.FindAsync(id);
+            await _toDoTaskRepo.Delete(id);
 
-            if (toDo == null)
-            {
-                return;
-            }
-
-            _context.ToDos.Remove(toDo);
-
-            await _context.SaveChangesAsync();
+            await _toDoTaskRepo.Save();
         }
 
-        private bool ToDoTaskExists(int id)
+        private async Task<bool> ToDoTaskExists(int id)
         {
-            return _context.ToDos.Any(e => e.Id == id);
+            var result =  await _context.ToDos.AnyAsync(e => e.Id == id);
+
+            return result;
         }
 
         public async Task ModifyTaskStatus(int taskId, string statusName)

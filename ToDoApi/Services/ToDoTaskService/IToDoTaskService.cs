@@ -11,7 +11,7 @@ namespace ToDoMvc.Services.ToDoTaskService
         Task<ActionResult<ToDoTask>> GetToDoTask(int id);
         Task<ActionResult<IEnumerable<ToDoTask>>> GetToDoTasks(string userId, string filterId);
         Task PostToDoTask(ToDoTask toDo);
-        Task<bool> PutToDoTask(int id, ToDoTask toDo);
+        Task PutToDoTask(int id, ToDoTask toDo);
         Task ModifyTaskStatus(int taskId, string statusId);
     }
 }

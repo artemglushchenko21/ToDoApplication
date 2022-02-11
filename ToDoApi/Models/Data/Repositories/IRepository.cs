@@ -15,7 +15,7 @@ namespace ToDoMvc.Models.Data.Repositories
 
         Task Insert(T entity);
         void Update(T entity);
-        void Delete(T entity);
+        Task Delete(int id);
 
         Task Save();
     }

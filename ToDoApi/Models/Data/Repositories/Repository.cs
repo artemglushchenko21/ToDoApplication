@@ -61,8 +61,15 @@ namespace ToDoMvc.Models.Data.Repositories
             _dbset.Update(entity);
         }
 
-        public void Delete(T entity)
+        public async Task Delete(int id)
         {
+            T entity = await _dbset.FindAsync(id);
+
+            if (entity == null)
+            {
+                return;
+            }
+
             _dbset.Remove(entity);
         }
 
