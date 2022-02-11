@@ -10,7 +10,7 @@ namespace ToDoMvc.Services
     public interface IUserService
     {
         Task AddAdminRoleToUser(string id);
-        Task<IdentityResult> AddAUser(RegisterViewModel model);
+        Task<IdentityResult> AddUser(RegisterViewModel model);
         Task<IActionResult> DeleteUser(string id);
         Task<IEnumerable<ApplicationUser>> GetAllUsers();
         Task<ApplicationUser> GetUserById(string id);

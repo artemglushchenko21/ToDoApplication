@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Models.Data;
 using ToDoApi.Models.ViewModels;
+using ToDoMvc.Services;
 
 namespace ToDoMvc.Areas.Admin.ControllersApi
 {
@@ -17,67 +18,41 @@ namespace ToDoMvc.Areas.Admin.ControllersApi
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<IdentityRole> _roleManager;      
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IUserService _userService;
 
         public UserController(ApplicationDbContext context,
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IUserService userService)
         {
             _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
+            _userService = userService;
         }
 
         [HttpGet]
         public async Task<IEnumerable<ApplicationUser>> GetAllUsers()
         {
-            List<ApplicationUser> appUsers = new();
-
-            foreach (ApplicationUser user in _userManager.Users)
-            {
-                await GetUserRoles(user);
-                appUsers.Add(user);
-            }
-
-            var userList = _context.Users.ToList();
-            return userList;
-        }
-
-        private async Task GetUserRoles(ApplicationUser user)
-        {
-            user.RoleNames = await _userManager.GetRolesAsync(user);
+            return await _userService.GetAllUsers();
         }
 
         [HttpGet("{id}")]
         public async Task<ApplicationUser> GetUserById(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            await GetUserRoles(user);
-
-            return user;
+           return await _userService.GetUserById(id);
         }
 
         [HttpPost]
-        public async Task<IdentityResult> AddAUser(RegisterViewModel model)
+        public async Task<IdentityResult> AddUser(RegisterViewModel model)
         {
-            var user = new ApplicationUser
-            {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Email = model.Email,
-                UserName = $"{ model.FirstName }{ model.LastName }"
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userService.AddUser(model);
 
-            if (result.Succeeded)
-            {
-                bool isPersistant = false;
-                await _signInManager.SignInAsync(user, isPersistant);
-            }
-            else
+            if (result.Succeeded == false)
             {
                 foreach (var error in result.Errors)
                 {

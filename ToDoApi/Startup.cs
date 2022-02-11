@@ -22,9 +22,10 @@ using ToDoApi.Models.ToDoTaskElements;
 using ToDoMvc.Models;
 using ToDoMvc.Models.Data.Repositories;
 using ToDoMvc.Models.Helpers;
+using ToDoMvc.Services;
 using ToDoMvc.Services.Authentication;
 using ToDoMvc.Services.ToDoTaskService;
-
+using ToDoMvc.Services.UserService;
 
 namespace ToDoApi
 {
@@ -84,6 +85,7 @@ namespace ToDoApi
             services.AddScoped<IToDoTaskService, ToDoTaskService>();
             services.AddScoped<IToDoTaskFilterService, ToDoTaskFilterService>();
             services.AddScoped<IToDoRepository<ToDoTask>, ToDoRepository>();
+            services.AddScoped<IUserService, UserService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

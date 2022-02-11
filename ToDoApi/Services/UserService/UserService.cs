@@ -33,9 +33,23 @@ namespace ToDoMvc.Services.UserService
             throw new NotImplementedException();
         }
 
-        public Task<IdentityResult> AddAUser(RegisterViewModel model)
+        public async Task<IdentityResult> AddUser(RegisterViewModel model)
         {
-            throw new NotImplementedException();
+            var user = new ApplicationUser
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                UserName = model.Email//$"{ model.FirstName }{ model.LastName }"
+            };
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                await AssignDefaultRoleToUser(user);
+            }
+
+            return result;
         }
 
         public Task<IActionResult> DeleteUser(string id)
@@ -62,14 +76,28 @@ namespace ToDoMvc.Services.UserService
             user.RoleNames = await _userManager.GetRolesAsync(user);
         }
 
-        public Task<ApplicationUser> GetUserById(string id)
+        public async Task<ApplicationUser> GetUserById(string id)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByIdAsync(id);
+            await GetUserRoles(user);
+
+            return user;
         }
 
         public Task RemoveAdminRoleFromUser(string id)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task AssignDefaultRoleToUser(ApplicationUser user)
+        {
+            string defaultRole = "member";
+            if (await _roleManager.FindByNameAsync(defaultRole) == null)
+            {
+                await _roleManager.CreateAsync(new IdentityRole(defaultRole));
+            }
+
+            await _userManager.AddToRoleAsync(user, defaultRole);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace ToDoMvc.Services.ToDoTaskService
     {
         private readonly IToDoRepository<ToDoTask> _toDoRepo;
 
-        public ToDoTaskService( IToDoRepository<ToDoTask> toDoRepo)
+        public ToDoTaskService(IToDoRepository<ToDoTask> toDoRepo)
         {
             _toDoRepo = toDoRepo;
         }

@@ -3,8 +3,9 @@
     ViewBag.Title = "Register";
 }
 
-<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
 <div class="mt-5">
+    <div asp-validation-summary="ModelOnly" class="offset-2 text-danger"></div>
     <form method="post" asp-action="Register">
         <div class="form-group row">
             <div class="col-sm-2"><label>First name:</label></div>

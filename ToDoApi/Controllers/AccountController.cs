@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -103,7 +104,14 @@ namespace ToDoApi.Controllers
 
                 if (response.IsSuccessStatusCode == false)
                 {
-                    throw new Exception(response.ReasonPhrase);
+                    var errors = response.Content.ReadAsAsync<IEnumerable<IdentityError>>().Result;
+
+                    foreach (var error in errors)
+                    {
+                        ModelState.AddModelError("", error.Description.Replace("Username", "Email"));
+                    }
+
+                    return View(model);
                 }
 
                 var loginData = new LoginViewModel { Email = model.Email, Password = model.Password };
