@@ -10,13 +10,13 @@ namespace ToDoMvc.Models.Data.Repositories
         IEnumerable<T> List(QueryOptions<T> options);
 
         T Get(QueryOptions<T> options);
-        T Get(int id);
-        T Get(string id);
+        Task<T> Get(int id);
+        Task<T> Get(string id);
 
-        void Insert(T entity);
+        Task Insert(T entity);
         void Update(T entity);
         void Delete(T entity);
 
-        void Save();
+        Task Save();
     }
 }

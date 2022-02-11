@@ -11,13 +11,13 @@ namespace ToDoMvc.Models.Data.Repositories
     {
         private readonly ApplicationDbContext _context;
 
-        private DbSet<T> dbset { get; set; }
+        private DbSet<T> _dbset { get; set; }
 
         public Repository(ApplicationDbContext context)
         {
             _context = context;
+            _dbset = _context.Set<T>();
         }
-
 
         public IEnumerable<T> List(QueryOptions<T> options)
         {
@@ -26,14 +26,14 @@ namespace ToDoMvc.Models.Data.Repositories
             return query.ToList();
         }
 
-        public virtual T Get(int id)
+        public virtual async Task<T> Get(int id)
         {
-            return dbset.Find(id);
+            return await _dbset.FindAsync(id);
         }
 
-        public virtual T Get(string id)
+        public virtual async Task<T> Get(string id)
         {
-            return dbset.Find(id);
+            return await _dbset.FindAsync(id);
         }
 
         public virtual T Get(QueryOptions<T> options)
@@ -43,33 +43,54 @@ namespace ToDoMvc.Models.Data.Repositories
             return query.FirstOrDefault();
         }
 
-        public void Insert(T entity)
+        public virtual async Task<List<T>> GetList(QueryOptions<T> options)
         {
-            dbset.Add(entity);
+            IQueryable<T> query = BuildQuery(options);
+
+            var result = await query.ToListAsync();
+            return result;
+        }
+
+        public async Task Insert(T entity)
+        {
+           await _dbset.AddAsync(entity);
         }
 
         public void Update(T entity)
         {
-            dbset.Update(entity);
+            _dbset.Update(entity);
         }
 
         public void Delete(T entity)
         {
-            dbset.Remove(entity);
+            _dbset.Remove(entity);
         }
 
-        public void Save()
+        public async Task Save()
         {
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
         }
 
         private IQueryable<T> BuildQuery(QueryOptions<T> options)
         {
-            IQueryable<T> query = dbset;
+            IQueryable<T> query = _dbset;
 
             foreach (string include in options.GetIncludes())
             {
                 query = query.Include(include);
+            }
+
+            if (options.HasWhere)
+            {
+                foreach (var clause in options.WhereClauses)
+                {
+                    query = query.Where(clause);
+                }
+            }
+
+            if (options.HasOrderBy)
+            {
+                query = query.OrderBy(options.OrderBy);
             }
 
             return query;
