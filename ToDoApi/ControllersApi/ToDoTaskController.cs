@@ -7,7 +7,7 @@ using ToDoApi.Models.ToDoTaskElements;
 using ToDoMvc.Models.DTOs;
 using ToDoMvc.Services.ToDoTaskService;
 
-namespace ToDoMvc.ApiControllers
+namespace ToDoMvc.ControllersApi
 {
     [Authorize]
     [Route("api/[controller]")]

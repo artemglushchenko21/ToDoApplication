@@ -11,7 +11,7 @@ using ToDoApi.Models.ViewModels;
 using ToDoMvc.Models;
 using ToDoMvc.Services.Authentication;
 
-namespace ToDoMvc.ApiControllers
+namespace ToDoMvc.ControllersApi
 {
     [Authorize]
     [Route("api/[controller]")]

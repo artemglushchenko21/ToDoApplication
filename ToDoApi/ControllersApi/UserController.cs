@@ -9,7 +9,7 @@ using ToDoApi.Models.Data;
 using ToDoApi.Models.ViewModels;
 
 
-namespace ToDoMvc.ApiControllers
+namespace ToDoMvc.ControllersApi
 {
     [Route("api/[controller]")]
     [ApiController]
