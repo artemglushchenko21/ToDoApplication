@@ -1,4 +1,5 @@
 ﻿using ExtensionsLibrary;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -7,11 +8,13 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ToDoApi.Models;
 using ToDoApi.Models.ViewModels;
 using ToDoMvc.Models;
 using ToDoMvc.Models.Helpers;
+using ToDoMvc.Queries.ToDoTaskQueries;
 using ToDoMvc.Services.ToDoTaskService;
 
 namespace ToDoApi.Controllers
@@ -39,7 +42,6 @@ namespace ToDoApi.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> LogIn(LoginViewModel model)
         {
             if (ModelState.IsValid)
@@ -95,7 +97,7 @@ namespace ToDoApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model, [FromServices] IToDoTaskService toDoTaskService)
+        public async Task<IActionResult> Register(RegisterViewModel model, [FromServices] IToDoTaskService toDoTaskService, [FromServices] IMediator _mediator)
         {
             if (ModelState.IsValid)
             {
@@ -122,7 +124,7 @@ namespace ToDoApi.Controllers
                     var authenticatedUser = await response.Content.ReadAsAsync<AuthenticatedUser>();
                     SetLoggedInUserInfo(authenticatedUser.Access_Token);
 
-                    var defaultTask = toDoTaskService.GetDefaultTask();
+                    var defaultTask = await _mediator.Send(new GetDefaultTaskQuery(User.FindFirstValue(ClaimTypes.NameIdentifier)));
                     await _apiHelper.ApiClient.PostAsJsonAsync("ToDoTask", defaultTask);
 
                     return RedirectToAction("ShowTasks", "Home");

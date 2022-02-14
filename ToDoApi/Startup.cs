@@ -49,12 +49,10 @@ namespace ToDoApi
 
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(60);
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
             });
 
             services.AddControllersWithViews().AddNewtonsoftJson();
-
-            var key = Configuration.GetValue<string>("JwtSecretKey");
 
             services.AddDbContext<ApplicationDbContext>(options =>
              options.UseSqlite(Configuration.GetConnectionString("ToDoDB")));
@@ -66,6 +64,7 @@ namespace ToDoApi
                 options.Password.RequireDigit = false;
             }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
+            var key = Configuration.GetValue<string>("JwtSecretKey");
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -85,7 +84,6 @@ namespace ToDoApi
 
             services.AddSingleton<IJwtAuthenticationManager>(new JwtAuthenticationManager(key));
             services.AddSingleton<IApiHelper, ApiHelper>();
-
             services.AddScoped<IToDoTaskService, ToDoTaskService>();
             services.AddScoped<IToDoTaskFilterService, ToDoTaskFilterService>();
             services.AddScoped<IToDoRepository<ToDoTask>, ToDoRepository>();

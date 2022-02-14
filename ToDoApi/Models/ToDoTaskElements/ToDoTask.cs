@@ -9,7 +9,6 @@ namespace ToDoApi.Models.ToDoTaskElements
     public class ToDoTask
     {
         public int Id { get; set; }
-
         public string UserId { get; set; }
 
         [Required(ErrorMessage = "Please enter a description.")]

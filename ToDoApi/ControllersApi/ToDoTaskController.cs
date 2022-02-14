@@ -9,6 +9,7 @@ using ToDoMvc.Services.ToDoTaskService;
 using MediatR;
 using ToDoMvc.Queries.ToDoTaskQueries;
 using ToDoMvc.Commands.ToDoTaskCommands;
+using Microsoft.AspNetCore.Http;
 
 namespace ToDoMvc.ControllersApi
 {
@@ -25,24 +26,27 @@ namespace ToDoMvc.ControllersApi
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ToDoTask>> GetToDoTasks(string filterId)
+        public async Task<IActionResult> GetToDoTasks(string filterId)
         {
             var tasks = await _mediator.Send(new GetToDoTasksQuery(filterId));
-            return tasks;
+
+            return Ok(tasks);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ToDoTask>> GetToDoTask(int id)
+        public async Task<IActionResult> GetToDoTask(int id)
         {
-            return await _mediator.Send(new GetToDoTaskQuery(id));
+            var task = await _mediator.Send(new GetToDoTaskQuery(id));
+
+            return Ok(task);
         }
 
         [HttpPost]
-        public async Task<ActionResult<ToDoTask>> PostToDoTask(ToDoTask toDoTask)
+        public async Task<IActionResult> PostToDoTask(ToDoTask toDoTask)
         {
-            await _mediator.Send(new PostToDoTaskCommand(toDoTask));
+           var result =  await _mediator.Send(new PostToDoTaskCommand(toDoTask));
 
-            return CreatedAtAction("GetToDoTask", new { id = toDoTask.Id }, toDoTask);
+            return Ok(result);
         }
 
         [HttpPut("{id}")]
@@ -50,15 +54,17 @@ namespace ToDoMvc.ControllersApi
         {
             if (id != toDoTask.Id) return BadRequest();
 
-            await _mediator.Send(new PutToDoTaskCommand(id, toDoTask));
+           await _mediator.Send(new PutToDoTaskCommand(id, toDoTask));
 
             return NoContent();
         }
 
         [HttpPost("ModifyToDoTaskStatus")]
-        public async Task ModifyToDoTaskStatus(TaskStatusDTO taskStatus)
+        public async Task<IActionResult> ModifyToDoTaskStatus(TaskStatusDTO taskStatus)
         {
-            await _mediator.Send(new ModifyTaskStatusCommand(taskStatus.TaskId, taskStatus.TaskStatusId));         
+            var result = await _mediator.Send(new ModifyTaskStatusCommand(taskStatus.TaskId, taskStatus.TaskStatusId));
+
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]

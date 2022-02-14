@@ -58,7 +58,6 @@ namespace ToDoMvc.ControllersApi
             return Ok(token);
         }
 
-
         private async Task<bool> IsValidUserNameAndPassword(string email, string password)
         {
             var user = await _userManager.FindByEmailAsync(email);
