@@ -19,7 +19,6 @@ namespace ToDoMvc.Services.UserService
         private readonly IConfiguration _config;
 
         public UserService(ApplicationDbContext context,
-            SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IConfiguration config)
@@ -90,23 +89,24 @@ namespace ToDoMvc.Services.UserService
 
             foreach (ApplicationUser user in _userManager.Users)
             {
-                await GetUserRoles(user);
-                appUsers.Add(user);
+               user.RoleNames = await GetUserRoles(user);
+               appUsers.Add(user);
             }
 
-            var userList = _context.Users.ToList();
+            var userList =  _context.Users.ToList();
             return userList;
         }
 
-        private async Task GetUserRoles(ApplicationUser user)
+        public async Task<IList<string>> GetUserRoles(ApplicationUser user)
         {
-            user.RoleNames = await _userManager.GetRolesAsync(user);
+            return await _userManager.GetRolesAsync(user);
         }
 
         public async Task<ApplicationUser> GetUserById(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            await GetUserRoles(user);
+
+            user.RoleNames = await GetUserRoles(user);
 
             return user;
         }
@@ -114,7 +114,9 @@ namespace ToDoMvc.Services.UserService
         public async Task RemoveAdminRoleFromUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
+
             string adminRoleName = _config.GetValue<string>("RoleNames:AdminRole");
+
             await _userManager.RemoveFromRoleAsync(user, adminRoleName);
         }
 

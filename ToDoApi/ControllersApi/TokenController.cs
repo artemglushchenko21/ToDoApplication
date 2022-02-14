@@ -9,6 +9,7 @@ using ToDoApi.Models;
 using ToDoApi.Models.Data;
 using ToDoApi.Models.ViewModels;
 using ToDoMvc.Models;
+using ToDoMvc.Services;
 using ToDoMvc.Services.Authentication;
 
 namespace ToDoMvc.ControllersApi
@@ -21,14 +22,17 @@ namespace ToDoMvc.ControllersApi
         private readonly IJwtAuthenticationManager _jwtAuthenticationManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly IUserService _userService;
 
         public TokenController(IJwtAuthenticationManager jwtAuthenticationManager, 
             UserManager<ApplicationUser> userManager,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            IUserService userService)
         {
             _jwtAuthenticationManager = jwtAuthenticationManager;
             _userManager = userManager;
             _context = context;
+            _userService = userService;
         }
 
 
@@ -41,14 +45,11 @@ namespace ToDoMvc.ControllersApi
                 return Unauthorized();
             }
 
-            var user = await _userManager.FindByEmailAsync(loginData.Email);
+            ApplicationUser user = await _userManager.FindByEmailAsync(loginData.Email);
 
-            var roles = from userRole in _context.UserRoles
-                        join role in _context.Roles on userRole.RoleId equals role.Id
-                        where userRole.UserId == user.Id
-                        select role.Name;
+            user.RoleNames = await _userService.GetUserRoles(user);
 
-            var token = _jwtAuthenticationManager.GenerateToken(user.FirstName, loginData.Email, user.Id, roles);
+            var token = _jwtAuthenticationManager.GenerateToken(user.FirstName, loginData.Email, user.Id, user.RoleNames);
             if (token == null)
             {
                 return Unauthorized();
@@ -56,6 +57,7 @@ namespace ToDoMvc.ControllersApi
 
             return Ok(token);
         }
+
 
         private async Task<bool> IsValidUserNameAndPassword(string email, string password)
         {

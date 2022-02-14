@@ -9,6 +9,7 @@ using System.Security.Claims;
 using ToDoApi.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ToDoMvc.Models;
 
 namespace ToDoMvc.Services.Authentication
 {
@@ -21,12 +22,12 @@ namespace ToDoMvc.Services.Authentication
             _key = key;
         }
 
-        public dynamic GenerateToken(string userName, string email, string userId, IQueryable<string> roles)
+        public AuthenticatedUser GenerateToken(string userName, string email, string userId, IList<string> roles)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.ASCII.GetBytes(_key);
 
-            List<Claim> claims = new List<Claim>();
+            List<Claim> claims = new();
 
             claims.Add(new Claim(ClaimTypes.Name, userName));
             claims.Add(new Claim(ClaimTypes.NameIdentifier, userId));
@@ -39,15 +40,6 @@ namespace ToDoMvc.Services.Authentication
 
             var tokenDesriptor = new SecurityTokenDescriptor
             {
-                
-                //Subject = new ClaimsIdentity(new Claim[]
-                //{
-                //    new Claim(ClaimTypes.Name, userName),
-                //    new Claim(ClaimTypes.NameIdentifier, userId),
-                //    new Claim(ClaimTypes.Email, email),
-
-
-                //}),
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(
@@ -57,7 +49,7 @@ namespace ToDoMvc.Services.Authentication
 
             var token = tokenHandler.CreateToken(tokenDesriptor);
 
-            var output = new
+            var output = new AuthenticatedUser
             {
                 Access_Token = new JwtSecurityTokenHandler().WriteToken(token),
                 UserName = userName

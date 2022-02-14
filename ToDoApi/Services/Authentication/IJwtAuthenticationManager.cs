@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ToDoMvc.Models;
 
 namespace ToDoMvc.Services.Authentication
 {
     public interface IJwtAuthenticationManager
     {
-        dynamic GenerateToken(string userName, string email, string userId, IQueryable<string> roles);
+        AuthenticatedUser GenerateToken(string userName, string email, string userId, IList<string> roles);
     }
 }
