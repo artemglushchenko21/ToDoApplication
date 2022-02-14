@@ -50,17 +50,15 @@ namespace ToDoMvc.Models.Helpers
                 new KeyValuePair<string, string>("password", password)
             });
 
-            using (HttpResponseMessage response = await _apiClient.PostAsync("/Token", data))
+            using HttpResponseMessage response = await _apiClient.PostAsync("/Token", data);
+            if (response.IsSuccessStatusCode)
             {
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadAsAsync<AuthenticatedUser>();
-                    return result;
-                }
-                else
-                {
-                    throw new Exception(response.ReasonPhrase);
-                }
+                var result = await response.Content.ReadAsAsync<AuthenticatedUser>();
+                return result;
+            }
+            else
+            {
+                throw new Exception(response.ReasonPhrase);
             }
         }
     }

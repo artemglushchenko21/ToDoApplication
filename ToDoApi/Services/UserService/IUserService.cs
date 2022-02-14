@@ -11,7 +11,7 @@ namespace ToDoMvc.Services
     {
         Task AddAdminRoleToUser(string id);
         Task<IdentityResult> AddUser(RegisterViewModel model);
-        Task<IActionResult> DeleteUser(string id);
+        Task<IdentityResult> DeleteUser(string id);
         Task<IEnumerable<ApplicationUser>> GetAllUsers();
         Task<ApplicationUser> GetUserById(string id);
         Task RemoveAdminRoleFromUser(string id);

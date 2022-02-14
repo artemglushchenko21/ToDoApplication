@@ -29,7 +29,6 @@ using ToDoMvc.Services.UserService;
 
 namespace ToDoApi
 {
-    //https://stackoverflow.com/questions/30701006/how-to-get-the-current-logged-in-user-id-in-asp-net-core
     public class Startup
     {
 

@@ -20,15 +20,12 @@ namespace ToDoMvc.Areas.Admin.Controllers
 
     public class UserViewController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IApiHelper _apiHelper;
 
-        public UserViewController(UserManager<ApplicationUser> userManager, 
-                        RoleManager<IdentityRole> roleManager,
+        public UserViewController(RoleManager<IdentityRole> roleManager,
                         IApiHelper apiHelper)
         {
-            _userManager = userManager;
             _roleManager = roleManager;
             _apiHelper = apiHelper;
         }
@@ -54,7 +51,6 @@ namespace ToDoMvc.Areas.Admin.Controllers
             HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync("admin/User/" + id);
 
             var user = await response.Content.ReadAsAsync<ApplicationUser>();
-            //var user = response.Content.ReadAsAsync<ApplicationUser>().Result;
 
             return View("Edit", user);
         }

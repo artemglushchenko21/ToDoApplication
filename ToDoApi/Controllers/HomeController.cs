@@ -122,7 +122,7 @@ namespace ToDoApi.Controllers
 
             AddFiltersToViewBag();
 
-            ModelState.Clear();
+           ModelState.Clear();
 
             return View(nameof(AddTask), result);
         }

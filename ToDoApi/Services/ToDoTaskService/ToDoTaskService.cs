@@ -32,9 +32,9 @@ namespace ToDoMvc.Services.ToDoTaskService
             return toDoTask;
         }
 
-        public async Task<ActionResult<IEnumerable<ToDoTask>>> GetToDoTasks(string userId, string filterId)
+        public async Task<ActionResult<IEnumerable<ToDoTask>>> GetToDoTasks(string filterId)
         {
-            var queryOptions = BuildQueryWithFilters(userId, filterId);
+            var queryOptions = BuildQueryWithFilters(GetUserId(), filterId);
             var tasks = await _toDoRepo.GetList(queryOptions);
 
             return tasks;
@@ -42,7 +42,7 @@ namespace ToDoMvc.Services.ToDoTaskService
 
         public async Task PostToDoTask(ToDoTask toDoTask)
         {
-            toDoTask.UserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            toDoTask.UserId = GetUserId();
 
             await _toDoRepo.Insert(toDoTask);
 
@@ -51,9 +51,11 @@ namespace ToDoMvc.Services.ToDoTaskService
 
         public async Task PutToDoTask(int id, ToDoTask toDoTask)
         {
-           await _toDoRepo.Update(id, toDoTask);
+            toDoTask.UserId = GetUserId();
 
-           await _toDoRepo.Save();
+            await _toDoRepo.Update(id, toDoTask);
+
+            await _toDoRepo.Save();
         }
 
         public async Task DeleteToDoTask(int id)
@@ -69,6 +71,25 @@ namespace ToDoMvc.Services.ToDoTaskService
 
             await _toDoRepo.Save();
         }
+
+        private string GetUserId()
+        {
+            return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
+
+        public ToDoTask GetDefaultTask()
+        {
+            var task = new ToDoTask
+            {
+                Description = "My first task",
+                CategoryId = "home",
+                DueDate = DateTime.Now,
+                StatusId = "open",
+                UserId = GetUserId()
+            };
+
+            return task;
+         }
 
         private static QueryOptions<ToDoTask> BuildQueryWithFilters(string userId, string filterId)
         {
@@ -100,11 +121,11 @@ namespace ToDoMvc.Services.ToDoTaskService
                 else if (filters.IsFuture)
                 {
                     queryOptions.Where = w => w.DueDate > today;
-                }    
+                }
                 else if (filters.IsToday)
                 {
                     queryOptions.Where = w => w.DueDate == today;
-                }                
+                }
             }
 
             queryOptions.OrderBy = a => a.DueDate;

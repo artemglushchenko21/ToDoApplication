@@ -14,7 +14,6 @@ namespace ToDoMvc.Services.UserService
     public class UserService : IUserService
     {
         private readonly ApplicationDbContext _context;
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _config;
@@ -26,15 +25,20 @@ namespace ToDoMvc.Services.UserService
             IConfiguration config)
         {
             _context = context;
-            _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
             _config = config;
         }
 
-        public Task AddAdminRoleToUser(string id)
+        public async Task AddAdminRoleToUser(string id)
         {
-            throw new NotImplementedException();
+            IdentityRole adminRole = await _roleManager.FindByNameAsync(_config.GetValue<string>("RoleNames:AdminRole"));
+
+            if (adminRole != null)
+            {
+                var user = await _userManager.FindByIdAsync(id);
+                await _userManager.AddToRoleAsync(user, adminRole.Name);
+            }
         }
 
         public async Task<IdentityResult> AddUser(RegisterViewModel model)
@@ -56,9 +60,28 @@ namespace ToDoMvc.Services.UserService
             return result;
         }
 
-        public Task<IActionResult> DeleteUser(string id)
+        public async Task<IdentityResult> DeleteUser(string id)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null) return IdentityResult.Failed();
+
+            IdentityResult result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+            {
+                string errorMessage = "";
+                foreach (IdentityError error in result.Errors)
+                {
+                    errorMessage += error.Description + " | ";
+                }
+
+                return result;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return result;
         }
 
         public async Task<IEnumerable<ApplicationUser>> GetAllUsers()
@@ -88,14 +111,16 @@ namespace ToDoMvc.Services.UserService
             return user;
         }
 
-        public Task RemoveAdminRoleFromUser(string id)
+        public async Task RemoveAdminRoleFromUser(string id)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByIdAsync(id);
+            string adminRoleName = _config.GetValue<string>("RoleNames:AdminRole");
+            await _userManager.RemoveFromRoleAsync(user, adminRoleName);
         }
 
         private async Task AssignDefaultRoleToUser(ApplicationUser user)
         {
-            string defaultRole = _config.GetValue<string>("RoleNames:DefaultRole"); //"member";
+            string defaultRole = _config.GetValue<string>("RoleNames:DefaultRole");
 
             if (await _roleManager.FindByNameAsync(defaultRole) == null)
             {

@@ -24,17 +24,13 @@ namespace ToDoMvc.ControllersApi
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ToDoTask>>> GetToDoTasks(string filterId)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            return await _toDoTaskService.GetToDoTasks(userId, filterId);
+            return await _toDoTaskService.GetToDoTasks(filterId);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ToDoTask>> GetToDoTask(int id)
         {
-            var toDoTask = await _toDoTaskService.GetToDoTask(id);
-
-            return toDoTask;
+            return await _toDoTaskService.GetToDoTask(id);
         }
 
         [HttpPost]
@@ -48,13 +44,9 @@ namespace ToDoMvc.ControllersApi
         [HttpPut("{id}")]
         public async Task<IActionResult> PutToDoTask(int id, ToDoTask toDo)
         {
-            toDo.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             if (id != toDo.Id) return BadRequest();
 
-             await _toDoTaskService.PutToDoTask(id, toDo);
-
-            //if (result.) return NotFound();
+            await _toDoTaskService.PutToDoTask(id, toDo);
 
             return NoContent();
         }
@@ -62,7 +54,7 @@ namespace ToDoMvc.ControllersApi
         [HttpPost("ModifyToDoTaskStatus")]
         public async Task ModifyToDoTaskStatus(TaskStatusDTO taskStatus)
         {
-           await _toDoTaskService.ModifyTaskStatus(taskStatus.TaskId, taskStatus.TaskStatusId);
+            await _toDoTaskService.ModifyTaskStatus(taskStatus.TaskId, taskStatus.TaskStatusId);
         }
 
         [HttpDelete("{id}")]

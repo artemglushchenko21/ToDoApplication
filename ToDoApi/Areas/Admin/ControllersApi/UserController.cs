@@ -17,26 +17,11 @@ namespace ToDoMvc.Areas.Admin.ControllersApi
     [Route("api/admin/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;      
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IUserService _userService;
-        private readonly IConfiguration _config;
 
-        public UserController(ApplicationDbContext context,
-            SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager,
-            IUserService userService,
-            IConfiguration config)
+        public UserController(IUserService userService)
         {
-            _context = context;
-            _signInManager = signInManager;
-            _userManager = userManager;
-            _roleManager = roleManager;
             _userService = userService;
-            _config = config;
         }
 
         [HttpGet]
@@ -69,27 +54,12 @@ namespace ToDoMvc.Areas.Admin.ControllersApi
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var result = await _userService.DeleteUser(id);
 
-            if (user == null)
+            if (result.Succeeded == false)
             {
                 return NotFound();
             }
-
-            if (user != null)
-            {
-                IdentityResult result = await _userManager.DeleteAsync(user);
-                if (!result.Succeeded)
-                {
-                    string errorMessage = "";
-                    foreach (IdentityError error in result.Errors)
-                    {
-                        errorMessage += error.Description + " | ";
-                    }
-                }
-            }
-
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
@@ -97,21 +67,13 @@ namespace ToDoMvc.Areas.Admin.ControllersApi
         [HttpPost("AddAdminRoleToUser/{id}")]
         public async Task AddAdminRoleToUser(string id)
         {
-            IdentityRole adminRole = await _roleManager.FindByNameAsync(_config.GetValue<string>("RoleNames:AdminRole"));
-
-            if (adminRole != null)
-            {
-                var user = await _userManager.FindByIdAsync(id);
-                await _userManager.AddToRoleAsync(user, adminRole.Name);
-            }
+           await _userService.AddAdminRoleToUser(id);
         }
 
         [HttpPost("RemoveAdminRoleFromUser/{id}")]
         public async Task RemoveAdminRoleFromUser(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            string adminRoleName =_config.GetValue<string>("RoleNames:AdminRole");
-            await _userManager.RemoveFromRoleAsync(user, adminRoleName);
+            await _userService.RemoveAdminRoleFromUser(id);
         }
     }
 }

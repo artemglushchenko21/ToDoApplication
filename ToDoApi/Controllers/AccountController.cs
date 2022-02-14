@@ -14,6 +14,7 @@ using ToDoApi.Models.ToDoTaskElements;
 using ToDoApi.Models.ViewModels;
 using ToDoMvc.Models;
 using ToDoMvc.Models.Helpers;
+using ToDoMvc.Services.ToDoTaskService;
 
 namespace ToDoApi.Controllers
 {
@@ -96,7 +97,7 @@ namespace ToDoApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model, [FromServices] IToDoTaskService toDoTaskService)
         {
             if (ModelState.IsValid)
             {
@@ -123,25 +124,13 @@ namespace ToDoApi.Controllers
                     var authenticatedUser = await response.Content.ReadAsAsync<AuthenticatedUser>();
                     SetLoggedInUserInfo(authenticatedUser.Access_Token);
 
-                    await CreateFirstDefaultTask();
+                    var defaultTask = toDoTaskService.GetDefaultTask();
+                    await _apiHelper.ApiClient.PostAsJsonAsync("ToDoTask", defaultTask);
 
                     return RedirectToAction("ShowTasks", "Home");
                 }
             }
             return View(model);
-        }
-
-        private async Task CreateFirstDefaultTask()
-        {
-            var task = new ToDoTask
-            {
-                Description = "My first task",
-                CategoryId = "home",
-                DueDate = DateTime.Now,
-                StatusId = "open"
-            };
-
-            await _apiHelper.ApiClient.PostAsJsonAsync("ToDoTask", task);
         }
     }
 }

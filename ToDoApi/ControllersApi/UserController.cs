@@ -31,19 +31,6 @@ namespace ToDoMvc.ControllersApi
             _userService = userService;
         }
 
-        // GET: api/<UserController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<UserController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
 
         [HttpPost]
         public async Task<IActionResult> CreateUser(RegisterViewModel model)
@@ -59,44 +46,7 @@ namespace ToDoMvc.ControllersApi
 
                return BadRequest(result.Errors);
             }
-            //return result;
-
-            //var user = new ApplicationUser
-            //{
-            //    FirstName = model.FirstName,
-            //    LastName = model.LastName,
-            //    Email = model.Email,
-            //    UserName = $"{ model.FirstName }{ model.LastName }"
-            //};
-            //var result = await _userManager.CreateAsync(user, model.Password);
-
-            //if (result.Succeeded)
-            //{
-            //    bool isPersistant = false;
-            //    await _signInManager.SignInAsync(user, isPersistant);
-            //}
-            //else
-            //{
-            //    foreach (var error in result.Errors)
-            //    {
-            //        ModelState.AddModelError("", error.Description);
-            //    }
-            //}
-
             return Ok(model);
-        }
-
-    
-        // PUT api/<UserController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<UserController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }
