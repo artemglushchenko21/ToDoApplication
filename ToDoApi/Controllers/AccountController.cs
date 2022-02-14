@@ -97,7 +97,7 @@ namespace ToDoApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model, [FromServices] IToDoTaskService toDoTaskService, [FromServices] IMediator _mediator)
+        public async Task<IActionResult> Register(RegisterViewModel model, [FromServices] IMediator _mediator)
         {
             if (ModelState.IsValid)
             {
