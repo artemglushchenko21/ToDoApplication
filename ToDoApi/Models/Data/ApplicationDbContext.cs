@@ -63,18 +63,18 @@ namespace ToDoApi.Models.Data
                 await roleManager.CreateAsync(new IdentityRole(memberRole));
             }
 
-            //ApplicationUser appUser = new()
-            //{
-            //    Email = adminEmail,
-            //    UserName = adminEmail
-            //};
+            ApplicationUser appUser = new()
+            {
+                Email = adminEmail,
+                UserName = adminEmail
+            };
 
-            //var result = await userManager.CreateAsync(appUser, adminPassword);
+            var result = await userManager.CreateAsync(appUser, adminPassword);
 
-            //if (result.Succeeded)
-            //{
-            //    await userManager.AddToRoleAsync(appUser, adminRole);
-            //}
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(appUser, adminRole);
+            }
         }
     }
 

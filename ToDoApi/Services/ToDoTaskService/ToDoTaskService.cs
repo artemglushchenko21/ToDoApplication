@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +10,10 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using ToDoApi.Models.Data;
 using ToDoApi.Models.ToDoTaskElements;
+using ToDoMvc.Models;
 using ToDoMvc.Models.Data;
 using ToDoMvc.Models.Data.Repositories;
+using ToDoMvc.Queries.ToDoTaskQueries;
 
 namespace ToDoMvc.Services.ToDoTaskService
 {
@@ -32,9 +35,9 @@ namespace ToDoMvc.Services.ToDoTaskService
             return toDoTask;
         }
 
-        public async Task<ActionResult<IEnumerable<ToDoTask>>> GetToDoTasks(string filterId)
+        public async Task<IEnumerable<ToDoTask>> GetToDoTasks(string filterId)
         {
-            var queryOptions = BuildQueryWithFilters(GetUserId(), filterId);
+            var queryOptions = QueryBuilder.BuildQueryWithFilters(GetUserId(), filterId);
             var tasks = await _toDoRepo.GetList(queryOptions);
 
             return tasks;
@@ -91,45 +94,6 @@ namespace ToDoMvc.Services.ToDoTaskService
             return task;
          }
 
-        private static QueryOptions<ToDoTask> BuildQueryWithFilters(string userId, string filterId)
-        {
-            var queryOptions = new QueryOptions<ToDoTask>
-            {
-                Include = $"{nameof(ToDoTask.Category)},{nameof(ToDoTask.Status)}",
-                Where = w => w.UserId == userId
-            };
-
-            var filters = new Filters(filterId);
-
-            if (filters.HasCategory)
-            {
-                queryOptions.Where = w => w.CategoryId == filters.CategoryId;
-            }
-
-            if (filters.HasStatus)
-            {
-                queryOptions.Where = w => w.StatusId == filters.StatusId;
-            }
-
-            if (filters.HasDue)
-            {
-                var today = DateTime.Today;
-                if (filters.IsPast)
-                {
-                    queryOptions.Where = w => w.DueDate < today;
-                }
-                else if (filters.IsFuture)
-                {
-                    queryOptions.Where = w => w.DueDate > today;
-                }
-                else if (filters.IsToday)
-                {
-                    queryOptions.Where = w => w.DueDate == today;
-                }
-            }
-
-            queryOptions.OrderBy = a => a.DueDate;
-            return queryOptions;
-        }
+ 
     }
 }

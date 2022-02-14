@@ -9,7 +9,7 @@ namespace ToDoMvc.Services.ToDoTaskService
     {
         Task DeleteToDoTask(int id);
         Task<ActionResult<ToDoTask>> GetToDoTask(int id);
-        Task<ActionResult<IEnumerable<ToDoTask>>> GetToDoTasks(string filterId);
+        Task<IEnumerable<ToDoTask>> GetToDoTasks(string filterId);
         Task PostToDoTask(ToDoTask toDo);
         Task PutToDoTask(int id, ToDoTask toDo);
         Task ModifyTaskStatus(int taskId, string statusId);

@@ -26,6 +26,7 @@ using ToDoMvc.Services;
 using ToDoMvc.Services.Authentication;
 using ToDoMvc.Services.ToDoTaskService;
 using ToDoMvc.Services.UserService;
+using MediatR;
 
 namespace ToDoApi
 {
@@ -89,6 +90,7 @@ namespace ToDoApi
             services.AddScoped<IToDoTaskFilterService, ToDoTaskFilterService>();
             services.AddScoped<IToDoRepository<ToDoTask>, ToDoRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddMediatR(typeof(Startup).Assembly);
 
             services.AddHttpContextAccessor();
         }

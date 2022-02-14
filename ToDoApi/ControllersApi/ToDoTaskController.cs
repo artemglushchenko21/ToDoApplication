@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 using ToDoApi.Models.ToDoTaskElements;
 using ToDoMvc.Models.DTOs;
 using ToDoMvc.Services.ToDoTaskService;
+using MediatR;
+using ToDoMvc.Queries.ToDoTaskQueries;
+using ToDoMvc.Commands.ToDoTaskCommands;
 
 namespace ToDoMvc.ControllersApi
 {
@@ -15,28 +18,33 @@ namespace ToDoMvc.ControllersApi
     public class ToDoTaskController : ControllerBase
     {
         private readonly IToDoTaskService _toDoTaskService;
+        private readonly IMediator _mediator;
 
-        public ToDoTaskController(IToDoTaskService toDoTaskService)
+        public ToDoTaskController(IToDoTaskService toDoTaskService, IMediator mediator)
         {
             _toDoTaskService = toDoTaskService;
+            _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ToDoTask>>> GetToDoTasks(string filterId)
+        public async Task<IEnumerable<ToDoTask>> GetToDoTasks(string filterId)
         {
-            return await _toDoTaskService.GetToDoTasks(filterId);
+            var tasks = await _mediator.Send(new GetToDoTasksQuery(filterId));
+            return tasks;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ToDoTask>> GetToDoTask(int id)
         {
-            return await _toDoTaskService.GetToDoTask(id);
+            return await _mediator.Send(new GetToDoTaskQuery(id));
         }
 
         [HttpPost]
         public async Task<ActionResult<ToDoTask>> PostToDoTask(ToDoTask toDoTask)
         {
-            await _toDoTaskService.PostToDoTask(toDoTask);
+            var model = new PostToDoTaskCommand(toDoTask);
+
+            await _mediator.Send(model);
 
             return CreatedAtAction("GetToDoTask", new { id = toDoTask.Id }, toDoTask);
         }
