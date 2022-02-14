@@ -83,9 +83,14 @@ namespace ToDoMvc.Models.Data.Repositories
             _dbset.Remove(entity);
         }
 
-        public async Task Save()
+        public Task Delete(T entity)
         {
-           await _context.SaveChangesAsync();
+          return  Task.FromResult(_dbset.Remove (entity));
+        }
+
+        public async Task<int> Save()
+        {
+           return await _context.SaveChangesAsync();
         }
 
         private IQueryable<T> BuildQuery(QueryOptions<T> options)

@@ -17,12 +17,10 @@ namespace ToDoMvc.ControllersApi
     [ApiController]
     public class ToDoTaskController : ControllerBase
     {
-        private readonly IToDoTaskService _toDoTaskService;
         private readonly IMediator _mediator;
 
-        public ToDoTaskController(IToDoTaskService toDoTaskService, IMediator mediator)
+        public ToDoTaskController(IMediator mediator)
         {
-            _toDoTaskService = toDoTaskService;
             _mediator = mediator;
         }
 
@@ -42,19 +40,17 @@ namespace ToDoMvc.ControllersApi
         [HttpPost]
         public async Task<ActionResult<ToDoTask>> PostToDoTask(ToDoTask toDoTask)
         {
-            var model = new PostToDoTaskCommand(toDoTask);
-
-            await _mediator.Send(model);
+            await _mediator.Send(new PostToDoTaskCommand(toDoTask));
 
             return CreatedAtAction("GetToDoTask", new { id = toDoTask.Id }, toDoTask);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutToDoTask(int id, ToDoTask toDo)
+        public async Task<IActionResult> PutToDoTask(int id, ToDoTask toDoTask)
         {
-            if (id != toDo.Id) return BadRequest();
+            if (id != toDoTask.Id) return BadRequest();
 
-            await _toDoTaskService.PutToDoTask(id, toDo);
+            await _mediator.Send(new PutToDoTaskCommand(id, toDoTask));
 
             return NoContent();
         }
@@ -62,13 +58,13 @@ namespace ToDoMvc.ControllersApi
         [HttpPost("ModifyToDoTaskStatus")]
         public async Task ModifyToDoTaskStatus(TaskStatusDTO taskStatus)
         {
-            await _toDoTaskService.ModifyTaskStatus(taskStatus.TaskId, taskStatus.TaskStatusId);
+            await _mediator.Send(new ModifyTaskStatusCommand(taskStatus.TaskId, taskStatus.TaskStatusId));         
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteToDoTask(int id)
         {
-            await _toDoTaskService.DeleteToDoTask(id);
+            await _mediator.Send(new DeleteToDoTaskCommand(id));
 
             return NoContent();
         }
