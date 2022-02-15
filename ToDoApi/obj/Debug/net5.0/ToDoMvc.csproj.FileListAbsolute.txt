@@ -189,3 +189,9 @@ C:\Users\user\source\repos\ToDoApplication\ToDoApi\bin\Debug\net5.0\MediatR.Cont
 C:\Users\user\source\repos\ToDoApplication\ToDoApi\bin\Debug\net5.0\MediatR.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\user\source\repos\ToDoApplication\ToDoApi\bin\Debug\net5.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\ToDoMvc.csproj.AssemblyReference.cache
+C:\Users\user\source\repos\ToDoApplication\ToDoApi\bin\Debug\net5.0\Microsoft.OpenApi.dll
+C:\Users\user\source\repos\ToDoApplication\ToDoApi\bin\Debug\net5.0\Swashbuckle.AspNetCore.Annotations.dll
+C:\Users\user\source\repos\ToDoApplication\ToDoApi\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\user\source\repos\ToDoApplication\ToDoApi\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\user\source\repos\ToDoApplication\ToDoApi\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\user\source\repos\ToDoApplication\ToDoApi\obj\Debug\net5.0\ToDoMvc.MvcApplicationPartsAssemblyInfo.cs

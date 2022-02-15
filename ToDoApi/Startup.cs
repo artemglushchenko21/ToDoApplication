@@ -27,6 +27,7 @@ using ToDoMvc.Services.Authentication;
 using ToDoMvc.Services.ToDoTaskService;
 using ToDoMvc.Services.UserService;
 using MediatR;
+using Microsoft.OpenApi.Models;
 
 namespace ToDoApi
 {
@@ -91,6 +92,17 @@ namespace ToDoApi
             services.AddMediatR(typeof(Startup).Assembly);
 
             services.AddHttpContextAccessor();
+
+
+            services.AddSwaggerGen(setup =>
+            {
+                setup.SwaggerDoc("v1",
+                new OpenApiInfo
+                {
+                    Title = "ToDo API",
+                    Version = "v1"
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -121,6 +133,12 @@ namespace ToDoApi
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(x =>
+            {
+                x.SwaggerEndpoint("/swagger/v1/swagger.json", "ToDo API v1");
+            });
 
             app.UseEndpoints(endpoints =>
             {
